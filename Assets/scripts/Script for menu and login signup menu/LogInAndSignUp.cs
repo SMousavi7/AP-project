@@ -14,6 +14,8 @@ public class LogInAndSignUp : MonoBehaviour
     public GameObject inputFieldForPassword;
     public GameObject inputFieldForUsername;
     public GameObject outputFieldForUsername;
+    public TMP_InputField user;
+    public TMP_InputField password;
     public Animator animator;
     
     public void SignUp()
@@ -32,6 +34,8 @@ public class LogInAndSignUp : MonoBehaviour
                 if (tempUser[0].CompareTo(strUserName) == 0)
                 {
                     outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = strUserName + " already exists!!!";
+                    user.text = "";
+                    password.text = "";
                     flag = false;
                     break;
                 }
@@ -64,6 +68,8 @@ public class LogInAndSignUp : MonoBehaviour
 
         if(!File.Exists("User.txt")) {
             outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "there is no account yet!!! please sign up first";
+            user.text = "";
+            password.text = "";
         }
         else
         {
@@ -84,22 +90,28 @@ public class LogInAndSignUp : MonoBehaviour
             }
             if (flag)
             {
+                print("toye flag login ham miam");
                 LoadNextScene();
             }else
             {
                 outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "username or password is not correct...";
+                user.text = "";
+                password.text = "";
             }
         }
     }
 
+
     public void LoadNextScene()
     {
-        StartCoroutine(LoadScene(SceneManager.GetActiveScene().buildIndex + 1));
+        StartCoroutine(ls(SceneManager.GetActiveScene().buildIndex + 1));
     }
-    IEnumerator LoadScene(int index)
+
+    IEnumerator ls(int index)
     {
-        animator.SetTrigger("start");
-        yield return new WaitForSeconds(1);
+        animator.SetTrigger("Start");
+        Debug.Log("miad inja va 2 sanie sabr mikone");
+        yield return new WaitForSeconds(4);
         SceneManager.LoadScene(index);
     }
 }
