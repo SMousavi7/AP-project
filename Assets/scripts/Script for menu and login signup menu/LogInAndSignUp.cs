@@ -46,8 +46,8 @@ public class LogInAndSignUp : MonoBehaviour
                 outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "dear " + strUserName + " you succefully signed up. welcom to the game...";
                 StreamWriter swWrite = File.AppendText("User.txt");
                 swWrite.Write(strUserName + " " + strPassword + " " + "0\n");
-                LoadNextScene();
                 swWrite.Close();
+                LoadNextScene();
             }
         }
         else
@@ -55,8 +55,8 @@ public class LogInAndSignUp : MonoBehaviour
             StreamWriter swWrite = new StreamWriter("User.txt");
             outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "dear " + strUserName + " you successfully signed up. welcom to the game...";
             swWrite.Write(strUserName + " " + strPassword + " " + "0\n");
-            LoadNextScene();
             swWrite.Close();
+            LoadNextScene();
         }
 
     }
@@ -65,6 +65,8 @@ public class LogInAndSignUp : MonoBehaviour
     {
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
         strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
+        print(strPassword);
+        print(strUserName);
 
         if(!File.Exists("User.txt")) {
             outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "there is no account yet!!! please sign up first";
@@ -90,7 +92,6 @@ public class LogInAndSignUp : MonoBehaviour
             }
             if (flag)
             {
-                print("toye flag login ham miam");
                 LoadNextScene();
             }else
             {
@@ -101,6 +102,75 @@ public class LogInAndSignUp : MonoBehaviour
         }
     }
 
+    public void ChangePassword()
+    {
+        strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
+        strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
+        print(strPassword);
+
+        int index = 0;
+        if (!File.Exists("User.txt"))
+        {
+            print("vared inja misham");
+            //outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "there is no account yet!!! please sign up first";
+            outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "there is no account yet!!! please sign up first";
+            user.text = "";
+            password.text = "";
+        }
+        else
+        {
+            StreamReader reader = new StreamReader("User.txt");
+            int i = 1;
+            bool flag = false;
+            while(!reader.EndOfStream)
+            {
+                string str = reader.ReadLine();
+                string[] splited = str.Split(" ");
+                if (splited[0].EndsWith(strUserName))
+                {
+                    flag = true;
+                    index = i;
+                    break;
+                }
+                i++;
+            }
+            if(!flag)
+            {
+                outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "username you entered is not exists";
+                reader.Close();
+                user.text = "";
+                password.text = "";
+            }else
+            {
+                StreamWriter writer = new StreamWriter("newUser.txt");
+                reader.Close();
+                reader = new StreamReader("User.txt");
+                int j = 1;
+                while(!reader.EndOfStream)
+                {
+                    print("alan toye in for hastam");
+                    string str = reader.ReadLine();
+                    if (index == j)
+                    {
+                        string[] splited = str.Split(" ");
+                        splited[1] = strPassword;
+                        str = splited[0] + " " + splited[1] + " " + splited[2] + "\n";
+                    }
+                    writer.Write(str);
+                    writer.Flush();
+                    j++;
+                }
+                print("alan az in for daromadam");
+                reader.Close();
+                writer.Close();
+                File.Delete("User.txt");
+                File.Move("newUser.txt", "User.txt");
+                outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = strUserName+" you changed your password successfully";
+            }
+
+
+        }
+    }
 
     public void LoadNextScene()
     {
