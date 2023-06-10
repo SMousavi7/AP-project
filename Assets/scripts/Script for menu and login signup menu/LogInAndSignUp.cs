@@ -17,7 +17,8 @@ public class LogInAndSignUp : MonoBehaviour
     public TMP_InputField user;
     public TMP_InputField password;
     public Animator animator;
-    
+    private object inputFieldForUserName;
+
     public void SignUp()
     {
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
@@ -106,7 +107,8 @@ public class LogInAndSignUp : MonoBehaviour
     {
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
         strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
-        print(strPassword);
+        print(inputFieldForPassword.GetComponent<TextMeshProUGUI>());
+        print(inputFieldForUsername.GetComponent<TextMeshProUGUI>());
 
         int index = 0;
         if (!File.Exists("User.txt"))

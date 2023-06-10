@@ -1658,7 +1658,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &525935678
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5724,7 +5724,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1312958799
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8032,7 +8032,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 378862723}
+      - m_Target: {fileID: 361726026}
         m_TargetAssemblyTypeName: LogInAndSignUp, Assembly-CSharp
         m_MethodName: ChangePassword
         m_Mode: 1
