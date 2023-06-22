@@ -48,6 +48,9 @@ public class LogInAndSignUp : MonoBehaviour
                 StreamWriter swWrite = File.AppendText("User.txt");
                 swWrite.Write(strUserName + " " + strPassword + " " + "0\n");
                 swWrite.Close();
+                StreamWriter temp = new StreamWriter("temp_username.txt");
+                temp.Write(strUserName);
+                temp.Close();
                 LoadNextScene();
             }
         }
@@ -57,6 +60,9 @@ public class LogInAndSignUp : MonoBehaviour
             outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "dear " + strUserName + " you successfully signed up. welcom to the game...";
             swWrite.Write(strUserName + " " + strPassword + " " + "0\n");
             swWrite.Close();
+            StreamWriter temp = new StreamWriter("temp_username.txt");
+            temp.Write(strUserName);
+            temp.Close();
             LoadNextScene();
         }
 
@@ -87,6 +93,9 @@ public class LogInAndSignUp : MonoBehaviour
                 {
                     outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "you loged in successfully...";
                     srReader.Close();
+                    StreamWriter temp = new StreamWriter("temp_username.txt");
+                    temp.Write(strUserName);
+                    temp.Close();
                     flag = true;
                     break;
                 }
