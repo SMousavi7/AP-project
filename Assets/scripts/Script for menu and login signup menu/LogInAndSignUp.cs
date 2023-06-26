@@ -23,8 +23,6 @@ public class LogInAndSignUp : MonoBehaviour
     {
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
         strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
-        //Debug.Log(s.Length);
-        //Debug.Log(strUserName);
         if(File.Exists("User.txt")) {
             StreamReader srUser = new StreamReader("User.txt");
             bool flag = true;
@@ -53,6 +51,7 @@ public class LogInAndSignUp : MonoBehaviour
                 temp.Close();
                 LoadNextScene();
             }
+            StartCoroutine(delay());
         }
         else
         {
@@ -63,6 +62,9 @@ public class LogInAndSignUp : MonoBehaviour
             StreamWriter temp = new StreamWriter("temp_username.txt");
             temp.Write(strUserName);
             temp.Close();
+            temp = new StreamWriter("Difficulty.txt");
+            temp.Write(2);
+            temp.Close();
             LoadNextScene();
         }
 
@@ -72,13 +74,12 @@ public class LogInAndSignUp : MonoBehaviour
     {
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
         strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
-        print(strPassword);
-        print(strUserName);
 
         if(!File.Exists("User.txt")) {
             outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "there is no account yet!!! please sign up first";
             user.text = "";
             password.text = "";
+            StartCoroutine(delay());
         }
         else
         {
@@ -96,6 +97,9 @@ public class LogInAndSignUp : MonoBehaviour
                     StreamWriter temp = new StreamWriter("temp_username.txt");
                     temp.Write(strUserName);
                     temp.Close();
+                    temp = new StreamWriter("Difficulty.txt");
+                    temp.Write(2);
+                    temp.Close();
                     flag = true;
                     break;
                 }
@@ -108,6 +112,8 @@ public class LogInAndSignUp : MonoBehaviour
                 outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "username or password is not correct...";
                 user.text = "";
                 password.text = "";
+                srReader.Close();
+                StartCoroutine(delay());
             }
         }
     }
@@ -116,17 +122,14 @@ public class LogInAndSignUp : MonoBehaviour
     {
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
         strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
-        print(inputFieldForPassword.GetComponent<TextMeshProUGUI>());
-        print(inputFieldForUsername.GetComponent<TextMeshProUGUI>());
 
         int index = 0;
         if (!File.Exists("User.txt"))
         {
-            print("vared inja misham");
-            //outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "there is no account yet!!! please sign up first";
             outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "there is no account yet!!! please sign up first";
             user.text = "";
             password.text = "";
+            StartCoroutine(delay());
         }
         else
         {
@@ -151,7 +154,9 @@ public class LogInAndSignUp : MonoBehaviour
                 reader.Close();
                 user.text = "";
                 password.text = "";
-            }else
+                StartCoroutine(delay());
+            }
+            else
             {
                 StreamWriter writer = new StreamWriter("newUser.txt");
                 reader.Close();
@@ -159,7 +164,6 @@ public class LogInAndSignUp : MonoBehaviour
                 int j = 1;
                 while(!reader.EndOfStream)
                 {
-                    print("alan toye in for hastam");
                     string str = reader.ReadLine();
                     if (index == j)
                     {
@@ -171,12 +175,13 @@ public class LogInAndSignUp : MonoBehaviour
                     writer.Flush();
                     j++;
                 }
-                print("alan az in for daromadam");
                 reader.Close();
                 writer.Close();
                 File.Delete("User.txt");
                 File.Move("newUser.txt", "User.txt");
                 outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = strUserName+" you changed your password successfully";
+                StartCoroutine(delay());
+                
             }
 
 
@@ -194,5 +199,11 @@ public class LogInAndSignUp : MonoBehaviour
         Debug.Log("miad inja va 2 sanie sabr mikone");
         yield return new WaitForSeconds(4);
         SceneManager.LoadScene(index);
+    }
+
+    IEnumerator delay()
+    {
+        yield return new WaitForSeconds(3);
+        outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "";
     }
 }

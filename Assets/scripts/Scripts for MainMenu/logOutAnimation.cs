@@ -10,6 +10,7 @@ public class logOutAnimation : MonoBehaviour
     public void LoadPreviousScene()
     {
         File.Delete("temp_username.txt");
+        File.Delete("Difficulty.txt");
         StartCoroutine(ls(SceneManager.GetActiveScene().buildIndex - 1));
     }
 
