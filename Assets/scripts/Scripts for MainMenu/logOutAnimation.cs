@@ -15,9 +15,9 @@ public class logOutAnimation : MonoBehaviour
 
     IEnumerator ls(int index)
     {
-        animator.SetTrigger("Start");
+        animator.SetTrigger("end");
         Debug.Log("miad inja va 2 sanie sabr mikone");
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(2);
         SceneManager.LoadScene(index);
     }
 }
