@@ -6,6 +6,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using UnityEngine.SceneManagement;
+using System.Net.Sockets;
+using System.Text;
+using System.Net;
+using System;
 
 public class LogInAndSignUp : MonoBehaviour
 {
@@ -18,12 +22,14 @@ public class LogInAndSignUp : MonoBehaviour
     public TMP_InputField password;
     public Animator animator;
     private object inputFieldForUserName;
+    private string ipAddress = "127.0.0.1";
+    private int port = 999;
 
     public void SignUp()
     {
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
         strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
-        if(File.Exists("User.txt")) {
+        /*if(File.Exists("User.txt")) {
             StreamReader srUser = new StreamReader("User.txt");
             bool flag = true;
             while( !srUser.EndOfStream )
@@ -66,11 +72,44 @@ public class LogInAndSignUp : MonoBehaviour
             temp.Write(2);
             temp.Close();
             LoadNextScene();
-        }
+        }*/
+            try
+            {
+                // Establish the remote endpoint for the socket.
+                IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+                int port = 12345;
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
 
-    }
+                // Create a TCP/IP socket.
+                Socket clientSocket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-    public void LogIn()
+                // Connect to the remote endpoint.
+                clientSocket.Connect(remoteEP);
+
+                Console.WriteLine("Connected to the server!");
+
+                // Send data to the server.
+                string message = "Hello from the client!";
+                byte[] buffer = Encoding.ASCII.GetBytes(message);
+                clientSocket.Send(buffer);
+
+                // Receive data from the server.
+                byte[] receivedBuffer = new byte[1024];
+                int bytesRead = clientSocket.Receive(receivedBuffer);
+                string receivedMessage = Encoding.ASCII.GetString(receivedBuffer, 0, bytesRead);
+                Console.WriteLine("Received from server: " + receivedMessage);
+
+                // Close the socket.
+                clientSocket.Shutdown(SocketShutdown.Both);
+                clientSocket.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.ToString());
+            }
+}
+
+public void LogIn()
     {
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
         strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
