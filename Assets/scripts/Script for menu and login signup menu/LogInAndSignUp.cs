@@ -139,69 +139,42 @@ public void LogIn()
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
         strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
 
-        int index = 0;
-        if (!File.Exists("User.txt"))
-        {
-            outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "there is no account yet!!! please sign up first";
-            user.text = "";
-            password.text = "";
-            StartCoroutine(delay());
-        }
-        else
-        {
-            StreamReader reader = new StreamReader("User.txt");
-            int i = 1;
-            bool flag = false;
-            while(!reader.EndOfStream)
-            {
-                string str = reader.ReadLine();
-                string[] splited = str.Split(" ");
-                if (splited[0].EndsWith(strUserName))
-                {
-                    flag = true;
-                    index = i;
-                    break;
-                }
-                i++;
-            }
-            if(!flag)
-            {
-                outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "username you entered is not exists";
-                reader.Close();
-                user.text = "";
-                password.text = "";
-                StartCoroutine(delay());
-            }
-            else
-            {
-                StreamWriter writer = new StreamWriter("newUser.txt");
-                reader.Close();
-                reader = new StreamReader("User.txt");
-                int j = 1;
-                while(!reader.EndOfStream)
-                {
-                    string str = reader.ReadLine();
-                    if (index == j)
-                    {
-                        string[] splited = str.Split(" ");
-                        splited[1] = strPassword;
-                        str = splited[0] + " " + splited[1] + " " + splited[2] + "\n";
-                    }
-                    writer.Write(str);
-                    writer.Flush();
-                    j++;
-                }
-                reader.Close();
-                writer.Close();
-                File.Delete("User.txt");
-                File.Move("newUser.txt", "User.txt");
-                outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = strUserName+" you changed your password successfully";
-                StartCoroutine(delay());
-                
-            }
+        strUserName = deletEnter(strUserName);
+        strPassword = deletEnter(strPassword);
 
 
-        }
+        IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234);
+
+        Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        clientSocket.Connect(serverAddress);
+
+        // Sending
+        string select = "3";
+        byte[] temp = System.Text.Encoding.UTF8.GetBytes(select);
+        clientSocket.Send(temp);
+        int toSendLen = System.Text.Encoding.ASCII.GetByteCount(strUserName);
+        byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(strUserName);
+        byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+        clientSocket.Send(toSendLenBytes);
+        clientSocket.Send(toSendBytes);
+
+        int toSendLe = System.Text.Encoding.ASCII.GetByteCount(strPassword);
+        byte[] toSendByte = System.Text.Encoding.ASCII.GetBytes(strPassword);
+        byte[] toSendLenByte = System.BitConverter.GetBytes(toSendLe);
+        clientSocket.Send(toSendLenByte);
+        clientSocket.Send(toSendByte);
+
+        byte[] rcvLenBytes = new byte[4];
+        clientSocket.Receive(rcvLenBytes);
+        int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
+        byte[] rcvBytes = new byte[rcvLen];
+        clientSocket.Receive(rcvBytes);
+        String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+        outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = rcv;
+
+        user.text = "";
+        password.text = "";
+        StartCoroutine(delay());
     }
 
     public void LoadNextScene()
@@ -212,7 +185,6 @@ public void LogIn()
     IEnumerator ls(int index)
     {
         animator.SetTrigger("Start");
-        Debug.Log("miad inja va 2 sanie sabr mikone");
         yield return new WaitForSeconds(4);
         SceneManager.LoadScene(index);
     }
