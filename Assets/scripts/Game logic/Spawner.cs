@@ -7,15 +7,16 @@ public class Spawner : MonoBehaviour
     [SerializeField] GameObject[] Balls;
     [SerializeField] Transform spawnerTransform;
     int index = 0;
+    public static float BALLSPAWNRATE = 5;
     float countdown = 0;
-    const int MAX_BALLS = 5;
-    private int balls = 0;
+    public static int MAX_BALLS = 3;
+    private static int balls = 0;
 
-    public void increaseBalls()
+    public static void increaseBalls()
     {
         balls++;
     }
-    public void DecreaseBalls()
+    public static void DecreaseBalls()
     {
         balls--;
     }
@@ -31,7 +32,8 @@ public class Spawner : MonoBehaviour
         countdown -= Time.deltaTime;
         if (countdown <= 0)
         {
-            countdown = 3;
+            countdown = BALLSPAWNRATE;
+            print(balls + " " + MAX_BALLS);
             if(balls < MAX_BALLS)
             {
                 Instantiate(Balls[index++ % 3], spawnerTransform);

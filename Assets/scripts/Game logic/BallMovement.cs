@@ -1,17 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class BallMovement : MonoBehaviour
 {
     [SerializeField] Transform ballTransform;
     [SerializeField] Rigidbody ballRigidbody;
-    [SerializeField] int hp = 20;
-    [SerializeField] Spawner spawner;
+    [SerializeField] int hp;
+    [SerializeField] GameObject smallBall, mediumBall;
+    private int initialhp;
     // Start is called before the first frame update
     void Start()
     {
-        ballRigidbody.AddForce(Random.Range(-10000, 10000), 0, 0);
+        ballRigidbody.AddForce(Random.Range(-10000, 10000), 500, 0);
+        initialhp = hp;
+        print(hp);
     }
 
 
@@ -19,11 +23,36 @@ public class BallMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            hp--;
-            if (hp <= 0)
+            initialhp--;
+            if(hp == 3)
             {
+                if(initialhp <= 0)
+                {
+                    Spawner.DecreaseBalls();
+                    Destroy(this.gameObject);
+                }
+            }
+            else if (initialhp <= hp / 2)
+            {
+                Vector3 pos = Vector3.zero;
+                pos.Set(ballTransform.position.x, ballTransform.position.y, ballTransform.position.z);
+                Quaternion rot = Quaternion.identity;
+                if(hp == 6)
+                {
+                    Instantiate(smallBall, pos, rot);
+                    Instantiate(smallBall, pos, rot);
+                    Spawner.increaseBalls();
+                    Spawner.increaseBalls();
+                }
+                else if (hp == 12)
+                {
+                    Instantiate(mediumBall, pos, rot);
+                    Instantiate(mediumBall, pos, rot);
+                    Spawner.increaseBalls();
+                    Spawner.increaseBalls();
+                }
                 Destroy(this.gameObject);
-                spawner.DecreaseBalls();
+                Spawner.DecreaseBalls();
             }
         }
     }

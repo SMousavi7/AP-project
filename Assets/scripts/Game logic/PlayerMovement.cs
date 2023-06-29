@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     {
 		if (collision.gameObject.CompareTag("Enemy"))
 		{
-			Destroy(this.gameObject);
+			//Destroy(this.gameObject);
 			print("game ended");
 		}
 
@@ -79,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
 				Quaternion rot = Quaternion.identity;
 				pos.Set(PlayerTransform.position.x, -156f, -83f);
 				Instantiate(bullet, pos, rot);
-				gunCoolDown = -0.15f;
+				gunCoolDown = -0.05f;
 			}
 		}
 		if(gunCoolDown < 0)

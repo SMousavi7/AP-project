@@ -129,5 +129,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ballTransform: {fileID: 8516797922564408244}
   ballRigidbody: {fileID: 8516797922564408136}
-  hp: 20
-  spawner: {fileID: 3601058206680497598, guid: 4915d02b4d0f0534b883e619cdce7314, type: 3}
+  hp: 12
+  smallBall: {fileID: 1347170295924101576, guid: f7bd8928288434847a49619380600913, type: 3}
+  mediumBall: {fileID: 5685269840273983411, guid: a3537baf6ef76244ebcccb8b20db454b, type: 3}
