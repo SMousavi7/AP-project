@@ -5,18 +5,30 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-	public Rigidbody PlayerRigidbody; 
-	public Transform PlayerTransform;
+	[SerializeField] Rigidbody PlayerRigidbody; 
+	[SerializeField] Transform PlayerTransform;
+	[SerializeField] Bullet bullet;
 	private Vector3 MAX_VELOCITY = Vector3.zero;
 	private float MAX_BORDER = 375f;
+	private float gunCoolDown = 0f;
 	// Start is called before the first frame update
 	void Start()
 	{
 		MAX_VELOCITY.Set(500, 0, 0);
 	}
 
-	// Update is called once per frame
-	void FixedUpdate()
+    private void OnCollisionEnter(Collision collision)
+    {
+		if (collision.gameObject.CompareTag("Enemy"))
+		{
+			Destroy(this.gameObject);
+			print("game ended");
+		}
+
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
 	{
 		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
 		{
@@ -51,14 +63,28 @@ public class PlayerMovement : MonoBehaviour
 				else
 				{
 					PlayerRigidbody.AddForce(30000 * Time.deltaTime, 0, 0);
-				}
-			}
+                }
+            }
 		}
 		else
 		{
 			PlayerRigidbody.velocity = PlayerRigidbody.velocity * 0.5f;
 		}
 		PlayerRigidbody.velocity.Normalize();
-
+		if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton((int)MouseButton.Left))
+		{
+			if(gunCoolDown >= 0)
+			{
+				Vector3 pos = Vector3.zero;
+				Quaternion rot = Quaternion.identity;
+				pos.Set(PlayerTransform.position.x, -156f, -83f);
+				Instantiate(bullet, pos, rot);
+				gunCoolDown = -0.15f;
+			}
+		}
+		if(gunCoolDown < 0)
+		{
+			gunCoolDown += Time.deltaTime;
+		}
     }
 }
