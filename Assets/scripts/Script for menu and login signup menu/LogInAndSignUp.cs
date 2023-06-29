@@ -10,6 +10,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Net;
 using System;
+using Unity.VisualScripting.Antlr3.Runtime;
+using static UnityEditor.ShaderData;
 
 public class LogInAndSignUp : MonoBehaviour
 {
@@ -22,138 +24,113 @@ public class LogInAndSignUp : MonoBehaviour
     public TMP_InputField password;
     public Animator animator;
     private object inputFieldForUserName;
-    private string ipAddress = "127.0.0.1";
-    private int port = 999;
+   
+    string deletEnter(string str)
+    {
+        string res = "";
+        for(int i =0; i < str.Length; i++)
+        {
+            if (str[i] == 8203)
+            {
+                continue;
+            }
+            res += str[i];
+        }
+        return res;
+    }
 
     public void SignUp()
     {
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
         strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
-        /*if(File.Exists("User.txt")) {
-            StreamReader srUser = new StreamReader("User.txt");
-            bool flag = true;
-            while( !srUser.EndOfStream )
-            {    
-                string fullLine = srUser.ReadLine();
-                string[] tempUser = fullLine.Split(" ");
-                if (tempUser[0].CompareTo(strUserName) == 0)
-                {
-                    outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = strUserName + " already exists!!!";
-                    user.text = "";
-                    password.text = "";
-                    flag = false;
-                    break;
-                }
-            }
-            srUser.Close();
-            if(flag)
-            {
-                outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "dear " + strUserName + " you succefully signed up. welcom to the game...";
-                StreamWriter swWrite = File.AppendText("User.txt");
-                swWrite.Write(strUserName + " " + strPassword + " " + "0\n");
-                swWrite.Close();
-                StreamWriter temp = new StreamWriter("temp_username.txt");
-                temp.Write(strUserName);
-                temp.Close();
-                LoadNextScene();
-            }
-            StartCoroutine(delay());
+        strPassword = deletEnter(strPassword);
+        strUserName = deletEnter(strUserName);
+       
+        IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234);
+
+        Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        clientSocket.Connect(serverAddress);
+
+        // Sending
+        string select = "1";
+        byte[] temp = System.Text.Encoding.UTF8.GetBytes(select);
+        clientSocket.Send(temp);
+        int toSendLen = System.Text.Encoding.ASCII.GetByteCount(strUserName);
+        byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(strUserName);
+        byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+        clientSocket.Send(toSendLenBytes);
+        clientSocket.Send(toSendBytes);
+
+        int toSendLe = System.Text.Encoding.ASCII.GetByteCount(strPassword);
+        byte[] toSendByte = System.Text.Encoding.ASCII.GetBytes(strPassword);
+        byte[] toSendLenByte = System.BitConverter.GetBytes(toSendLe);
+        clientSocket.Send(toSendLenByte);
+        clientSocket.Send(toSendByte);
+
+        byte[] rcvLenBytes = new byte[4];
+        clientSocket.Receive(rcvLenBytes);
+        int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
+        byte[] rcvBytes = new byte[rcvLen];
+        clientSocket.Receive(rcvBytes);
+        String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+
+        outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = rcv;
+        if(outputFieldForUsername.GetComponent<TextMeshProUGUI>().text.Equals("welcome to the game " + strUserName))
+        {
+            LoadNextScene();
         }
         else
         {
-            StreamWriter swWrite = new StreamWriter("User.txt");
-            outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "dear " + strUserName + " you successfully signed up. welcom to the game...";
-            swWrite.Write(strUserName + " " + strPassword + " " + "0\n");
-            swWrite.Close();
-            StreamWriter temp = new StreamWriter("temp_username.txt");
-            temp.Write(strUserName);
-            temp.Close();
-            temp = new StreamWriter("Difficulty.txt");
-            temp.Write(2);
-            temp.Close();
-            LoadNextScene();
-        }*/
-            try
-            {
-                // Establish the remote endpoint for the socket.
-                IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
-                int port = 12345;
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-
-                // Create a TCP/IP socket.
-                Socket clientSocket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-                // Connect to the remote endpoint.
-                clientSocket.Connect(remoteEP);
-
-                Console.WriteLine("Connected to the server!");
-
-                // Send data to the server.
-                string message = "Hello from the client!";
-                byte[] buffer = Encoding.ASCII.GetBytes(message);
-                clientSocket.Send(buffer);
-
-                // Receive data from the server.
-                byte[] receivedBuffer = new byte[1024];
-                int bytesRead = clientSocket.Receive(receivedBuffer);
-                string receivedMessage = Encoding.ASCII.GetString(receivedBuffer, 0, bytesRead);
-                Console.WriteLine("Received from server: " + receivedMessage);
-
-                // Close the socket.
-                clientSocket.Shutdown(SocketShutdown.Both);
-                clientSocket.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.ToString());
-            }
-}
+            user.text = "";
+            password.text = "";
+            StartCoroutine(delay());
+        }
+    }
 
 public void LogIn()
     {
         strPassword = inputFieldForPassword.GetComponent<TextMeshProUGUI>().text;
         strUserName = inputFieldForUsername.GetComponent<TextMeshProUGUI>().text;
+        strPassword = deletEnter(strPassword);
+        strUserName = deletEnter(strUserName);
 
-        if(!File.Exists("User.txt")) {
-            outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "there is no account yet!!! please sign up first";
-            user.text = "";
-            password.text = "";
-            StartCoroutine(delay());
+        IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234);
+
+        Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        clientSocket.Connect(serverAddress);
+
+        // Sending
+        string select = "2";
+        byte[] temp = System.Text.Encoding.UTF8.GetBytes(select);
+        clientSocket.Send(temp);
+        int toSendLen = System.Text.Encoding.ASCII.GetByteCount(strUserName);
+        byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(strUserName);
+        byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+        clientSocket.Send(toSendLenBytes);
+        clientSocket.Send(toSendBytes);
+
+        int toSendLe = System.Text.Encoding.ASCII.GetByteCount(strPassword);
+        byte[] toSendByte = System.Text.Encoding.ASCII.GetBytes(strPassword);
+        byte[] toSendLenByte = System.BitConverter.GetBytes(toSendLe);
+        clientSocket.Send(toSendLenByte);
+        clientSocket.Send(toSendByte);
+
+        byte[] rcvLenBytes = new byte[4];
+        clientSocket.Receive(rcvLenBytes);
+        int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
+        byte[] rcvBytes = new byte[rcvLen];
+        clientSocket.Receive(rcvBytes);
+        String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+        outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = rcv;
+        if(outputFieldForUsername.GetComponent<TextMeshProUGUI>().text.Equals("you loged in successfully..."))
+        {
+            LoadNextScene();
         }
         else
         {
-            StreamReader srReader = new StreamReader("User.txt");
-            bool flag = false;
-            while(!srReader.EndOfStream)
-            {
-
-                string fullLine = srReader.ReadLine();
-                string[] tempUser = fullLine.Split(" ");
-                if (tempUser[0].Equals(strUserName) && tempUser[1].Equals(strPassword))
-                {
-                    outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "you loged in successfully...";
-                    srReader.Close();
-                    StreamWriter temp = new StreamWriter("temp_username.txt");
-                    temp.Write(strUserName);
-                    temp.Close();
-                    temp = new StreamWriter("Difficulty.txt");
-                    temp.Write(2);
-                    temp.Close();
-                    flag = true;
-                    break;
-                }
-            }
-            if (flag)
-            {
-                LoadNextScene();
-            }else
-            {
-                outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = "username or password is not correct...";
-                user.text = "";
-                password.text = "";
-                srReader.Close();
-                StartCoroutine(delay());
-            }
+            user.text = "";
+            password.text = "";
+            StartCoroutine(delay());
         }
     }
 
