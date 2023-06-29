@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] Transform PlayerTransform;
 	[SerializeField] Bullet bullet;
 	private Vector3 MAX_VELOCITY = Vector3.zero;
+	public static float fireRate = 0.1f; 
 	private float MAX_BORDER = 375f;
 	private float gunCoolDown = 0f;
 	// Start is called before the first frame update
@@ -79,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
 				Quaternion rot = Quaternion.identity;
 				pos.Set(PlayerTransform.position.x, -156f, -83f);
 				Instantiate(bullet, pos, rot);
-				gunCoolDown = -0.05f;
+				gunCoolDown = -fireRate;
 			}
 		}
 		if(gunCoolDown < 0)

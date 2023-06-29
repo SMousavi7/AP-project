@@ -13,7 +13,7 @@ public class BallMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ballRigidbody.AddForce(Random.Range(-10000, 10000), 500, 0);
+        ballRigidbody.AddForce(Random.Range(-10000, 10000), 10000, 0);
         initialhp = hp;
         print(hp);
     }
@@ -21,6 +21,10 @@ public class BallMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            ballRigidbody.AddForce(0, 30000, 0);
+        }
         if (collision.gameObject.CompareTag("Bullet"))
         {
             initialhp--;

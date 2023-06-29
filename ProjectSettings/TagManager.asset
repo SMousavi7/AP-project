@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - Bullet
   - Roof
+  - Ground
   layers:
   - Default
   - TransparentFX

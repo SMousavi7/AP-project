@@ -11,6 +11,8 @@ public class Spawner : MonoBehaviour
     float countdown = 0;
     public static int MAX_BALLS = 3;
     private static int balls = 0;
+    Vector3 spawnPosition = Vector3.zero;
+    Quaternion spawnRotation = Quaternion.identity;
 
     public static void increaseBalls()
     {
@@ -24,6 +26,7 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         balls = 0;
+        spawnPosition.Set(0, 230, -80);
     }
 
     // Update is called once per frame
@@ -36,7 +39,7 @@ public class Spawner : MonoBehaviour
             print(balls + " " + MAX_BALLS);
             if(balls < MAX_BALLS)
             {
-                Instantiate(Balls[index++ % 3], spawnerTransform);
+                Instantiate(Balls[index++ % 3], spawnPosition, spawnRotation);
                 increaseBalls();
             }
         }
