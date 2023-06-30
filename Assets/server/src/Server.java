@@ -419,7 +419,6 @@ public class Server {
             while(scanner.hasNextLine())
             {
                 String line = scanner.nextLine();
-                System.out.println(line);
                 String[] splited = line.split(" ");
 
                 String toSend = splited[0];

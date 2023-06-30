@@ -4,10 +4,20 @@ using System.Net.Sockets;
 using System.Net;
 using UnityEngine;
 using System;
+using TMPro;
 
 public class LeaderBoard : MonoBehaviour
 {
-
+    [SerializeField] GameObject firstName;
+    [SerializeField] GameObject firstScore;
+    [SerializeField] GameObject secondName;
+    [SerializeField] GameObject secondScore;
+    [SerializeField] GameObject thirdName;
+    [SerializeField] GameObject thirdScore;
+    [SerializeField] GameObject forthName;
+    [SerializeField] GameObject forthScore;
+    [SerializeField] GameObject fifthName;
+    [SerializeField] GameObject fifthScore;
     public void leaderBoard()
     {
         IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234);
@@ -65,6 +75,15 @@ public class LeaderBoard : MonoBehaviour
             }
         }
 
-        
+        firstName.GetComponent<TextMeshProUGUI>().text = (string)names[0];
+        firstScore.GetComponent<TextMeshProUGUI>().text = (string)points[0];
+        secondName.GetComponent<TextMeshProUGUI>().text = (string)names[1];
+        secondScore.GetComponent<TextMeshProUGUI>().text = (string)points[1];
+        thirdName.GetComponent<TextMeshProUGUI>().text = (string)names[2];
+        thirdScore.GetComponent<TextMeshProUGUI>().text = (string)points[2];
+        forthName.GetComponent<TextMeshProUGUI>().text = (string)names[3];
+        forthScore.GetComponent<TextMeshProUGUI>().text = (string)points[3];
+        fifthName.GetComponent<TextMeshProUGUI>().text = (string)names[4];
+        fifthScore.GetComponent<TextMeshProUGUI>().text = (string)points[4];
     }
 }
