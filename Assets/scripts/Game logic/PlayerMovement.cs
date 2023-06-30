@@ -151,11 +151,7 @@ public class PlayerMovement : MonoBehaviour
 		
 		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
 		{
-			if(!(PlayerTransform.position.x > -MAX_BORDER))
-            {
-                PlayerRigidbody.velocity = PlayerRigidbody.velocity * 0.5f;
-            }
-            else if(PlayerRigidbody.velocity.x > -MAX_VELOCITY.x)
+			if(PlayerRigidbody.velocity.x > -MAX_VELOCITY.x)
 			{ 
 				if(PlayerRigidbody.velocity.x > 300)
 				{
@@ -169,11 +165,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 		else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
 		{
-			if(!(PlayerTransform.position.x < MAX_BORDER))
-            {
-                PlayerRigidbody.velocity = PlayerRigidbody.velocity * 0.5f;
-            }
-            else if (PlayerRigidbody.velocity.x < MAX_VELOCITY.x)
+			if (PlayerRigidbody.velocity.x < MAX_VELOCITY.x)
 			{
 				if (PlayerRigidbody.velocity.x < -300)
 				{
