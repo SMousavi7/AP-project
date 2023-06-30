@@ -80,6 +80,9 @@ public class LogInAndSignUp : MonoBehaviour
             StreamWriter writer = new StreamWriter("temp_username.txt");
             writer.Write(strUserName);
             writer.Close();
+            writer = new StreamWriter("Difficulty.txt");
+            writer.Write(2);
+            writer.Close();
             LoadNextScene();
         }
         else
@@ -129,6 +132,9 @@ public void LogIn()
         {
             StreamWriter writer = new StreamWriter("temp_username.txt");
             writer.Write(strUserName);
+            writer.Close();
+            writer = new StreamWriter("Difficulty.txt");
+            writer.Write(2);
             writer.Close();
             LoadNextScene();
         }

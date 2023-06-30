@@ -12,7 +12,6 @@ public class Server {
     {
         try {
             serverSocket = new ServerSocket(port);
-            socket = serverSocket.accept();
         }catch (Exception e)
         {
 
@@ -168,6 +167,7 @@ public class Server {
                         os.write(toSendLenBytes);
                         os.write(toSendBytes);
                         flag = true;
+                        scanner.close();
                     }
                 }
                 if (!flag)
@@ -182,6 +182,7 @@ public class Server {
                     toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
                     os.write(toSendLenBytes);
                     os.write(toSendBytes);
+                    scanner.close();
                 }
             }
 
@@ -322,7 +323,6 @@ public class Server {
             {
                 String line = scanner.nextLine();
                 String[] splited = line.split(" ");
-                System.out.println(line);
                 if(splited[0].equals(newName))
                 {
                     flag = false;
@@ -359,7 +359,7 @@ public class Server {
                     if(splited[0].equals(oldName))
                     {
                         splited[0] = newName;
-                        flag = true;
+                        flag1 = true;
                     }
                     line = splited[0] + " " + splited[1] + " " + splited[2] + "\n";
                     formatter.format(line);
@@ -411,10 +411,10 @@ public class Server {
 
     public static void main(String[] args) throws Exception{
             Server server = new Server(1234);
-            InputStream inputStream = server.socket.getInputStream();
-
-            byte[] select = new byte[1];
             while(true) {
+                server.socket = server.serverSocket.accept();
+                InputStream inputStream = server.socket.getInputStream();
+                byte[] select = new byte[1];
                 inputStream.read(select);
                 String str = new String(select);
                 switch (str) {
