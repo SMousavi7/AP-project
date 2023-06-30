@@ -12,7 +12,11 @@ public class Score : MonoBehaviour
     private static int score = 0;
     private static int highScore = 0;
     private static int mult = 1;
-
+    public static int getHighScore()
+    {
+        //do this sadra
+        return 999;
+    }
     public static void setMult(int mult)
     {
         Score.mult = mult;
@@ -30,7 +34,7 @@ public class Score : MonoBehaviour
     void Start()
     {
         scoreText.text = score.ToString() + " Points";
-        highScoreText.text = highScore.ToString() + " Points";
+        highScoreText.text = getHighScore() + " Points";
     }
 
     // Update is called once per frame
