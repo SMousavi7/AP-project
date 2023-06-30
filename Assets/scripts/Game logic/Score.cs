@@ -12,10 +12,15 @@ public class Score : MonoBehaviour
     private static int score = 0;
     private static int highScore = 0;
     private static int mult = 1;
-
+    private static int difficulty = 1;
+    public static int getHighScore()
+    {
+        //do this sadra
+        return 999;
+    }
     public static void setMult(int mult)
     {
-        Score.mult = mult;
+        Score.mult = mult * difficulty;
     }
     public static int getScore()
     {
@@ -29,8 +34,10 @@ public class Score : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //read difficulty from file
+        difficulty = PlayerMovement.difficultyLevel;
         scoreText.text = score.ToString() + " Points";
-        highScoreText.text = highScore.ToString() + " Points";
+        highScoreText.text = getHighScore() + " Points";
     }
 
     // Update is called once per frame

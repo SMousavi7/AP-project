@@ -26,6 +26,17 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         balls = 0;
+        if(PlayerMovement.difficultyLevel == 2)
+        {
+            BALLSPAWNRATE = 4;
+            MAX_BALLS = 4;
+        }
+        if(PlayerMovement.difficultyLevel == 3)
+        {
+            BALLSPAWNRATE = 3;
+            MAX_BALLS = 5;
+        }
+        //read BALLSPAWNRATE and MAXBALLS from file
         spawnPosition.Set(0, 230, -80);
     }
 
