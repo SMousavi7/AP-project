@@ -9,8 +9,6 @@ public class PlayAnimation : MonoBehaviour
     public Animator animator;
     public void LoadNextScene()
     {
-        
-        File.Delete("Difficulty.txt");
         StartCoroutine(ls(SceneManager.GetActiveScene().buildIndex + 1));
     }
 

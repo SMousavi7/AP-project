@@ -74,16 +74,19 @@ public class LeaderBoard : MonoBehaviour
                 }
             }
         }
-
-        firstName.GetComponent<TextMeshProUGUI>().text = (string)names[0];
-        firstScore.GetComponent<TextMeshProUGUI>().text = (string)points[0];
-        secondName.GetComponent<TextMeshProUGUI>().text = (string)names[1];
-        secondScore.GetComponent<TextMeshProUGUI>().text = (string)points[1];
-        thirdName.GetComponent<TextMeshProUGUI>().text = (string)names[2];
-        thirdScore.GetComponent<TextMeshProUGUI>().text = (string)points[2];
-        forthName.GetComponent<TextMeshProUGUI>().text = (string)names[3];
-        forthScore.GetComponent<TextMeshProUGUI>().text = (string)points[3];
-        fifthName.GetComponent<TextMeshProUGUI>().text = (string)names[4];
-        fifthScore.GetComponent<TextMeshProUGUI>().text = (string)points[4];
+        try
+        {
+            firstName.GetComponent<TextMeshProUGUI>().text = (string)names[0];
+            firstScore.GetComponent<TextMeshProUGUI>().text = (string)points[0];
+            secondName.GetComponent<TextMeshProUGUI>().text = (string)names[1];
+            secondScore.GetComponent<TextMeshProUGUI>().text = (string)points[1];
+            thirdName.GetComponent<TextMeshProUGUI>().text = (string)names[2];
+            thirdScore.GetComponent<TextMeshProUGUI>().text = (string)points[2];
+            forthName.GetComponent<TextMeshProUGUI>().text = (string)names[3];
+            forthScore.GetComponent<TextMeshProUGUI>().text = (string)points[3];
+            fifthName.GetComponent<TextMeshProUGUI>().text = (string)names[4];
+            fifthScore.GetComponent<TextMeshProUGUI>().text = (string)points[4];
+        }
+        catch (Exception e) { }
     }
 }
