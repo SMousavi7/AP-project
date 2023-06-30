@@ -54,7 +54,8 @@ public class PlayerMovement : MonoBehaviour
 		}
         if (collision.gameObject.name.Equals("threeshot"))
         {
-            print("threeshot");
+			setTwoShot(true);
+			multcounter = -6f;
         }
         if (collision.gameObject.name.Equals("invulnerbility"))
         {
@@ -165,6 +166,7 @@ public class PlayerMovement : MonoBehaviour
 				setInvulnerable(false);
 				BallMovement.timestop = false;
 				BallMovement.bombed = false;
+				setTwoShot(false);
 			}
 		}
     }
