@@ -11,13 +11,19 @@ public class Score : MonoBehaviour
     [SerializeField] Text highScoreText;
     private static int score = 0;
     private static int highScore = 0;
+    private static int mult = 1;
+
+    public static void setMult(int mult)
+    {
+        Score.mult = mult;
+    }
     public static int getScore()
     {
         return score;
     }
     public static void addScore(int score)
     {
-        Score.score += score;
+        Score.score += score * mult;
     }
  
     // Start is called before the first frame update

@@ -13,7 +13,8 @@ public class PlayerMovement : MonoBehaviour
 	private float MAX_BORDER = 375f;
 	private float gunCoolDown = 0f;
 	bool invulnerable = false;
-	bool threeShot = true;
+	bool threeShot = false;
+	float multcounter = 0;
     // Start is called before the first frame update
     void Start()
 	{
@@ -54,9 +55,22 @@ public class PlayerMovement : MonoBehaviour
         {
 
         }
-        if (collision.gameObject.name.Equals("shield"))
+        if (collision.gameObject.name.Equals("invulnerbility"))
         {
 
+        }
+        if (collision.gameObject.name.Equals("bomb"))
+        {
+			
+        }
+        if (collision.gameObject.name.Equals("timestop"))
+        {
+
+        }
+        if (collision.gameObject.name.Equals("multiply"))
+        {
+			Score.setMult(2);
+			multcounter = -30f;
         }
     }
 
@@ -125,6 +139,14 @@ public class PlayerMovement : MonoBehaviour
 		if(gunCoolDown < 0)
 		{
 			gunCoolDown += Time.deltaTime;
+		}
+		if(multcounter < 0)
+		{
+			multcounter += Time.deltaTime;
+			if(multcounter >= 0) 
+			{
+				Score.setMult(1);
+			}
 		}
     }
 }
