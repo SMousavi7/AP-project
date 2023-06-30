@@ -25,7 +25,7 @@ public class BallMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            ballRigidbody.AddForce(0, 30000, 0);
+            ballRigidbody.AddForce(0, 38000, 0);
         }
         if (collision.gameObject.CompareTag("Bullet"))
         {
