@@ -15,14 +15,19 @@ public class PlayerMovement : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		MAX_VELOCITY.Set(500, 0, 0);
+		MAX_VELOCITY.Set(750, 0, 0);
+	}
+
+	void setFireRate(float fireRate)
+	{
+		PlayerMovement.fireRate = fireRate;
 	}
 
     private void OnCollisionEnter(Collision collision)
     {
 		if (collision.gameObject.CompareTag("Enemy"))
 		{
-			//Destroy(this.gameObject);
+			Destroy(this.gameObject);
 			print("game ended");
 		}
 
@@ -39,13 +44,13 @@ public class PlayerMovement : MonoBehaviour
             }
             else if(PlayerRigidbody.velocity.x > -MAX_VELOCITY.x)
 			{ 
-				if(PlayerRigidbody.velocity.x > 100)
+				if(PlayerRigidbody.velocity.x > 300)
 				{
-                    PlayerRigidbody.AddForce(-70000 * (PlayerRigidbody.velocity.x / 150.0f) * Time.deltaTime, 0, 0);
+                    PlayerRigidbody.AddForce(-100000 * (PlayerRigidbody.velocity.x / 150.0f) * Time.deltaTime, 0, 0);
                 }
                 else
 				{
-					PlayerRigidbody.AddForce(-30000 * Time.deltaTime, 0, 0);
+					PlayerRigidbody.AddForce(-50000 * Time.deltaTime, 0, 0);
 				}
 			}
 		}
@@ -57,13 +62,13 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (PlayerRigidbody.velocity.x < MAX_VELOCITY.x)
 			{
-				if (PlayerRigidbody.velocity.x < -100)
+				if (PlayerRigidbody.velocity.x < -300)
 				{
-					PlayerRigidbody.AddForce(70000 * (PlayerRigidbody.velocity.x / -150.0f) * Time.deltaTime, 0, 0);
+					PlayerRigidbody.AddForce(100000 * (PlayerRigidbody.velocity.x / -150.0f) * Time.deltaTime, 0, 0);
 				}
 				else
 				{
-					PlayerRigidbody.AddForce(30000 * Time.deltaTime, 0, 0);
+					PlayerRigidbody.AddForce(50000 * Time.deltaTime, 0, 0);
                 }
             }
 		}
