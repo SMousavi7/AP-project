@@ -21,7 +21,6 @@ public class Server {
         try {
             InputStream is = socket.getInputStream();
             OutputStream os = socket.getOutputStream();
-            PrintWriter writer = new PrintWriter(os);
             // Receiving
             byte[] lenBytes = new byte[4];
             is.read(lenBytes, 0, 4);
@@ -41,11 +40,10 @@ public class Server {
             File file = new File("User.txt");
             if(!file.exists())
             {
-                Writer fileWriter = new FileWriter("User.txt");
+                Formatter formatter = new Formatter(file);
                 String put = name + " " + password + " " + "0\n";
-                fileWriter.write(put);
-                fileWriter.flush();
-                fileWriter.close();
+                formatter.format(put);
+                formatter.close();
                 String toSend = "welcome to the game " + name;
                 byte[] toSendBytes = toSend.getBytes();
                 int toSendLen = toSendBytes.length;
@@ -56,6 +54,8 @@ public class Server {
                 toSendLenBytes[3] = (byte)((toSendLen >> 24) & 0xff);
                 os.write(toSendLenBytes);
                 os.write(toSendBytes);
+                is.close();
+                os.close();
             }
             else {
                 while (true) {
@@ -75,6 +75,7 @@ public class Server {
                             toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
                             os.write(toSendLenBytes);
                             os.write(toSendBytes);
+                            scanner.close();
                             flag = false;
                             break;
                         }
@@ -99,8 +100,8 @@ public class Server {
                         toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
                         os.write(toSendLenBytes);
                         os.write(toSendBytes);
+                        scanner.close();
                     }
-                    writer.close();
                 }
             }
         }catch (Exception e)
@@ -115,7 +116,6 @@ public class Server {
         try {
             InputStream is = socket.getInputStream();
             OutputStream os = socket.getOutputStream();
-            PrintWriter writer = new PrintWriter(os);
             // Receiving
             byte[] lenBytes = new byte[4];
             is.read(lenBytes, 0, 4);
@@ -453,14 +453,106 @@ public class Server {
             toSendLenBytes1[3] = (byte) ((toSendLen1 >> 24) & 0xff);
             os.write(toSendLenBytes1);
             os.write(toSendBytes1);
-             scanner.close();
+            scanner.close();
         }catch (Exception e)
         {
 
         }
     }
 
+    void checkScore()
+    {
+        try {
+            InputStream is = socket.getInputStream();
+            OutputStream os = socket.getOutputStream();
+            // Receiving
+            byte[] lenBytes = new byte[4];
+            is.read(lenBytes, 0, 4);
+            int len = (((lenBytes[3] & 0xff) << 24) | ((lenBytes[2] & 0xff) << 16) |
+                    ((lenBytes[1] & 0xff) << 8) | (lenBytes[0] & 0xff));
+            byte[] receivedBytes = new byte[len];
+            is.read(receivedBytes, 0, len);
+            String score = new String(receivedBytes, 0, len);
 
+            byte[] lenPass = new byte[4];
+            is.read(lenPass, 0, 4);
+            int Len = (((lenPass[3] & 0xff) << 24) | ((lenPass[2] & 0xff) << 16) |
+                    ((lenPass[1] & 0xff) << 8) | (lenPass[0] & 0xff));
+            byte[] receivedPass = new byte[Len];
+            is.read(receivedPass, 0, Len);
+            String name = new String(receivedPass, 0, Len);
+
+            File file = new File("User.txt");
+            Scanner scanner = new Scanner(file);
+            boolean flag = false;
+            while(scanner.hasNextLine())
+            {
+                String line = scanner.nextLine();
+                String[] splited = line.split(" ");
+                if(splited[0].equals(name))
+                {
+                    if(Integer.parseInt(splited[2]) < Integer.parseInt(score))
+                    {
+                        flag = true;
+                    }
+                }
+            }
+            if(flag)
+            {
+                File newFile = new File("new_User.txt");
+                Formatter formatter = new Formatter(newFile);
+                scanner.close();
+                scanner = new Scanner(file);
+                while(scanner.hasNextLine())
+                {
+                    String line = scanner.nextLine();
+                    String[] splited = line.split(" ");
+                    if(splited[0].equals(name))
+                    {
+                        splited[2] = score;
+                    }
+                    line = splited[0] + " " + splited[1] + " " + splited[2] + "\n";
+                    formatter.format(line);
+                    formatter.flush();
+                }
+                scanner.close();
+                formatter.close();
+                String toSend = "new record";
+                byte[] toSendBytes = toSend.getBytes();
+                int toSendLen = toSendBytes.length;
+                byte[] toSendLenBytes = new byte[4];
+                toSendLenBytes[0] = (byte) (toSendLen & 0xff);
+                toSendLenBytes[1] = (byte) ((toSendLen >> 8) & 0xff);
+                toSendLenBytes[2] = (byte) ((toSendLen >> 16) & 0xff);
+                toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
+                os.write(toSendLenBytes);
+                os.write(toSendBytes);
+                file.delete();
+                newFile.renameTo(file);
+                is.close();
+                os.close();
+            }
+            else
+            {
+                String toSend = "non";
+                byte[] toSendBytes = toSend.getBytes();
+                int toSendLen = toSendBytes.length;
+                byte[] toSendLenBytes = new byte[4];
+                toSendLenBytes[0] = (byte) (toSendLen & 0xff);
+                toSendLenBytes[1] = (byte) ((toSendLen >> 8) & 0xff);
+                toSendLenBytes[2] = (byte) ((toSendLen >> 16) & 0xff);
+                toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
+                os.write(toSendLenBytes);
+                os.write(toSendBytes);
+                scanner.close();
+                is.close();
+                os.close();
+            }
+        }catch (Exception e)
+        {
+
+        }
+    }
 
 
 
@@ -491,6 +583,9 @@ public class Server {
                         server.leaderBoard();
                         break;
                     case "6":
+                        server.checkScore();
+                        break;
+                    case "7":
                 }
             }
     }

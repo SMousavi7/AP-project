@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using System.IO;
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -46,7 +49,47 @@ public class PlayerMovement : MonoBehaviour
 			{
 				Destroy(this.gameObject);
 				print("game ended");
-			}
+
+                IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234);
+
+                Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                clientSocket.Connect(serverAddress);
+
+                string toSend = "" + Score.getScore();
+                string select = "6";
+                byte[] temp = System.Text.Encoding.UTF8.GetBytes(select);
+                clientSocket.Send(temp);
+                int toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
+                byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
+                byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+                clientSocket.Send(toSendLenBytes);
+                clientSocket.Send(toSendBytes);
+
+				StreamReader sr = new StreamReader("temp_username.txt");
+				string str = sr.ReadLine();
+				sr.Close();
+
+                int toSendLen1 = System.Text.Encoding.ASCII.GetByteCount(str);
+                byte[] toSendBytes1 = System.Text.Encoding.ASCII.GetBytes(str);
+                byte[] toSendLenBytes1 = System.BitConverter.GetBytes(toSendLen1);
+                clientSocket.Send(toSendLenBytes1);
+                clientSocket.Send(toSendBytes1);
+
+                byte[] rcvLenBytes = new byte[4];
+                clientSocket.Receive(rcvLenBytes);
+                int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
+                byte[] rcvBytes = new byte[rcvLen];
+                clientSocket.Receive(rcvBytes);
+                String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+				if(rcv.Equals("new record"))
+				{
+					print(rcv);
+				}
+				else
+				{
+					print(Score.getScore());
+				}
+            }
 		}
 		if (collision.gameObject.name.Equals("shield"))
 		{

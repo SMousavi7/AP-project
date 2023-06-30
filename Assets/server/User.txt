@@ -1,5 +1,3 @@
-Javad ***** 12
-Farzin ******** 3
-Erfan ******* 25
-Ghaem ***** 34
-Mohadeseh **** 56
+Sadra ***** 9
+Farzin ****** 15
+Ghola ***** 24
