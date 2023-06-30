@@ -26,6 +26,7 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         balls = 0;
+        //read BALLSPAWNRATE and MAXBALLS from file
         spawnPosition.Set(0, 230, -80);
     }
 

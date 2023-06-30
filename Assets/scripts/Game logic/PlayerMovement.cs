@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
 	public static float fireRate = 0.1f; 
 	private float MAX_BORDER = 375f;
 	private float gunCoolDown = 0f;
-	bool invulnerable = false;
+	bool invulnerable = true;
 	bool threeShot = false;
 	float multcounter = 0;
     // Start is called before the first frame update
@@ -40,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+		print(collision.gameObject.name);
 		if (collision.gameObject.CompareTag("Enemy"))
 		{
 			if (!invulnerable)
@@ -48,40 +49,36 @@ public class PlayerMovement : MonoBehaviour
 				print("game ended");
 			}
 		}
-		if (collision.gameObject.name.Equals("shield"))
-		{
-			print("shield");
-		}
-        if (collision.gameObject.name.Equals("threeshot"))
+        if (collision.gameObject.name.StartsWith("threeshot"))
         {
 			setTwoShot(true);
-			multcounter = -6f;
+			multcounter = -5f;
         }
-        if (collision.gameObject.name.Equals("invulnerbility"))
+        if (collision.gameObject.name.StartsWith("invulnerbility"))
         {
 			print("invulnerbility");
 			setInvulnerable(true);
-			multcounter = -6f;
+			multcounter = -5f;
         }
-        if (collision.gameObject.name.Equals("bomb"))
+        if (collision.gameObject.name.StartsWith("bomb"))
         {
 			BallMovement.bombed = true;
 			multcounter = -1f;
 			print("bomb");
         }
-        if (collision.gameObject.name.Equals("timestop"))
+        if (collision.gameObject.name.StartsWith("timestop"))
         {
 			BallMovement.timestop = true;
 			multcounter = -6f;
 			print("timestop");
         }
-        if (collision.gameObject.name.Equals("multiply"))
+        if (collision.gameObject.name.StartsWith("multiply"))
         {
 			print("mult");
 			Score.setMult(2);
 			multcounter = -5f;
         }
-        if (collision.gameObject.name.Equals("firerate"))
+        if (collision.gameObject.name.StartsWith("firerate"))
         {
 			print("firerate");
 			setFireRate(0.05f);
@@ -163,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
 			{
 				Score.setMult(1);
 				setFireRate(0.1f);
-				setInvulnerable(false);
+				//setInvulnerable(false);
 				BallMovement.timestop = false;
 				BallMovement.bombed = false;
 				setTwoShot(false);

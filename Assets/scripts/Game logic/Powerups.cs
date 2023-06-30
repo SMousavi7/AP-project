@@ -22,6 +22,6 @@ public class Powerups : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        powerupRigidbody.AddForce(0, -100, 0);
+        powerupRigidbody.AddForce(0, -20, 0);
     }
 }

@@ -12,6 +12,7 @@ public class Score : MonoBehaviour
     private static int score = 0;
     private static int highScore = 0;
     private static int mult = 1;
+    private static int difficulty = 1;
     public static int getHighScore()
     {
         //do this sadra
@@ -19,7 +20,7 @@ public class Score : MonoBehaviour
     }
     public static void setMult(int mult)
     {
-        Score.mult = mult;
+        Score.mult = mult * difficulty;
     }
     public static int getScore()
     {
@@ -33,6 +34,7 @@ public class Score : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //read difficulty from file
         scoreText.text = score.ToString() + " Points";
         highScoreText.text = getHighScore() + " Points";
     }
