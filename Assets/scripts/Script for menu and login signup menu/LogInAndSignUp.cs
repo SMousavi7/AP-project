@@ -77,6 +77,9 @@ public class LogInAndSignUp : MonoBehaviour
         outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = rcv;
         if(outputFieldForUsername.GetComponent<TextMeshProUGUI>().text.Equals("welcome to the game " + strUserName))
         {
+            StreamWriter writer = new StreamWriter("temp_username.txt");
+            writer.Write(strUserName);
+            writer.Close();
             LoadNextScene();
         }
         else
@@ -124,6 +127,9 @@ public void LogIn()
         outputFieldForUsername.GetComponent<TextMeshProUGUI>().text = rcv;
         if(outputFieldForUsername.GetComponent<TextMeshProUGUI>().text.Equals("you loged in successfully..."))
         {
+            StreamWriter writer = new StreamWriter("temp_username.txt");
+            writer.Write(strUserName);
+            writer.Close();
             LoadNextScene();
         }
         else

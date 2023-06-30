@@ -4,89 +4,90 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UIElements;
 using TMPro;
+using System.Net.Sockets;
+using System.Net;
+using System;
 
 public class ChangeUsername : MonoBehaviour
 {
-    [SerializeField] private GameObject username;
+    [SerializeField] private GameObject old_username;
+    [SerializeField] private GameObject new_username;
     [SerializeField] private GameObject output;
 
+    string delete(string str)
+    {
+        string res = "";
+        for (int i = 0; i < str.Length; i++)
+        {
+            if (str[i] == 8203)
+            {
+                continue;
+            }
+            res += str[i];
+        }
+        return res;
+    }
     public void ChangeName()
     {
-        StreamReader sr = new StreamReader("temp_username.txt");
-        string name = sr.ReadLine();
-        sr.Close();
-        string temp1 = username.GetComponent<TextMeshProUGUI>().text;
-        File.Delete("temp_username.txt");
-        StreamWriter sq = new StreamWriter("temp_username.txt");
-        sq.Write(temp1);
-        sq.Close();
-        StreamReader search = new StreamReader("User.txt");
-        bool flag = false;
-        while(!search.EndOfStream)
+
+        string oldUse = old_username.GetComponent<TextMeshProUGUI>().text;
+        string newUse = new_username.GetComponent<TextMeshProUGUI>().text;
+        oldUse = delete(oldUse);
+        newUse = delete(newUse);
+        print(oldUse);
+        print(newUse);
+        if (oldUse.Equals(newUse))
         {
-            string[] arr = search.ReadLine().Split(" ");
-            if (arr[0].Equals(temp1) )
-            {
-                flag = true;
-                search.Close();
-                break;
-            }
-        }
-        if (flag)
-        {
-            output.GetComponent<TextMeshProUGUI>().text = "this name already exists!!";
+            output.GetComponent<TextMeshProUGUI>().text = "this username already exists...";
             StartCoroutine(delay());
         }
         else
         {
-            search.Close();
-            search = new StreamReader("User.txt");
-            int index = 0;
-            int i = 1;
-            string newName = "";
+            IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234);
 
-            while (!search.EndOfStream)
-            {
-                string line = search.ReadLine();
-                string[] temp = line.Split(" ");
-                if (temp[0].Equals(name))
-                {
-                    index = i;
-                    temp[0] = temp1;
-                    newName = temp[0] + " " + temp[1] + " " + temp[2] + "\n";
-                    search.Close();
-                    break;
-                }
-                else
-                {
-                    i++;
-                }
-            }
-            search.Close();
-            search = new StreamReader("User.txt");
-            StreamWriter sw = new StreamWriter("new_User.txt");
-            i = 1;
-            while (!search.EndOfStream)
-            {
-                string line = search.ReadLine();
-                if (i == index)
-                {
-                    sw.Write(newName);
-                }
-                else
-                {
-                    sw.Write(line);
+            Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            clientSocket.Connect(serverAddress);
 
-                }
-                sw.Flush();
-                i++;
+            // Sending
+            string select = "4";
+            byte[] temp = System.Text.Encoding.UTF8.GetBytes(select);
+            clientSocket.Send(temp);
+            int toSendLen = System.Text.Encoding.ASCII.GetByteCount(oldUse);
+            byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(oldUse);
+            byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+            clientSocket.Send(toSendLenBytes);
+            clientSocket.Send(toSendBytes);
+
+
+            int toSendLen1 = System.Text.Encoding.ASCII.GetByteCount(newUse);
+            byte[] toSendBytes1 = System.Text.Encoding.ASCII.GetBytes(newUse);
+            byte[] toSendLenBytes1 = System.BitConverter.GetBytes(toSendLen);
+            clientSocket.Send(toSendLenBytes1);
+            clientSocket.Send(toSendBytes1);
+
+
+            byte[] rcvLenBytes = new byte[4];
+            clientSocket.Receive(rcvLenBytes);
+            int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
+            byte[] rcvBytes = new byte[rcvLen];
+            clientSocket.Receive(rcvBytes);
+            String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+            print(rcv);
+            if (rcv.Equals("true"))
+            {
+                output.GetComponent<TextMeshProUGUI>().text = "you changed your name successfully";
+                StartCoroutine(delay());
             }
-            search.Close();
-            sw.Close();
-            File.Delete("User.txt");
-            File.Move("new_User.txt", "User.txt");
-            output.GetComponent<TextMeshProUGUI>().text = "you changed your name successfully";
-            StartCoroutine(delay());
+            else if(rcv.Equals("false"))
+            {
+                output.GetComponent<TextMeshProUGUI>().text = "this username already exists...";
+                StartCoroutine(delay());
+            }
+            else
+            {
+                output.GetComponent<TextMeshProUGUI>().text = "wrong username entered...";
+                StartCoroutine(delay());
+            }
         }
     }
 
