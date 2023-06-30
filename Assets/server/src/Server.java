@@ -409,6 +409,64 @@ public class Server {
         }
     }
 
+    void leaderBoard()
+    {
+        try {
+            InputStream is = socket.getInputStream();
+            OutputStream os = socket.getOutputStream();
+            File file = new File("User.txt");
+            Scanner scanner = new Scanner(file);
+            while(scanner.hasNextLine())
+            {
+                String line = scanner.nextLine();
+                System.out.println(line);
+                String[] splited = line.split(" ");
+
+                String toSend = splited[0];
+                byte[] toSendBytes = toSend.getBytes();
+                int toSendLen = toSendBytes.length;
+                byte[] toSendLenBytes = new byte[4];
+                toSendLenBytes[0] = (byte) (toSendLen & 0xff);
+                toSendLenBytes[1] = (byte) ((toSendLen >> 8) & 0xff);
+                toSendLenBytes[2] = (byte) ((toSendLen >> 16) & 0xff);
+                toSendLenBytes[3] = (byte) ((toSendLen >> 24) & 0xff);
+                os.write(toSendLenBytes);
+                os.write(toSendBytes);
+
+                String toSend1 = splited[2];
+                byte[] toSendBytes1 = toSend1.getBytes();
+                int toSendLen1 = toSendBytes1.length;
+                byte[] toSendLenBytes1 = new byte[4];
+                toSendLenBytes1[0] = (byte) (toSendLen1 & 0xff);
+                toSendLenBytes1[1] = (byte) ((toSendLen1 >> 8) & 0xff);
+                toSendLenBytes1[2] = (byte) ((toSendLen1 >> 16) & 0xff);
+                toSendLenBytes1[3] = (byte) ((toSendLen1 >> 24) & 0xff);
+                os.write(toSendLenBytes1);
+                os.write(toSendBytes1);
+            }
+            String toSend1 = "end";
+            byte[] toSendBytes1 = toSend1.getBytes();
+            int toSendLen1 = toSendBytes1.length;
+            byte[] toSendLenBytes1 = new byte[4];
+            toSendLenBytes1[0] = (byte) (toSendLen1 & 0xff);
+            toSendLenBytes1[1] = (byte) ((toSendLen1 >> 8) & 0xff);
+            toSendLenBytes1[2] = (byte) ((toSendLen1 >> 16) & 0xff);
+            toSendLenBytes1[3] = (byte) ((toSendLen1 >> 24) & 0xff);
+            os.write(toSendLenBytes1);
+            os.write(toSendBytes1);
+             scanner.close();
+        }catch (Exception e)
+        {
+
+        }
+    }
+
+
+
+
+
+
+
     public static void main(String[] args) throws Exception{
             Server server = new Server(1234);
             while(true) {
@@ -431,6 +489,9 @@ public class Server {
                         server.changeName();
                         break;
                     case "5":
+                        server.leaderBoard();
+                        break;
+                    case "6":
                 }
             }
     }
