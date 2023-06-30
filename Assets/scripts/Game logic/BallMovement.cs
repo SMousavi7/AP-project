@@ -15,7 +15,6 @@ public class BallMovement : MonoBehaviour
     {
         ballRigidbody.AddForce(Random.Range(-10000, 10000), 10000, 0);
         initialhp = hp;
-        print(hp);
     }
 
 

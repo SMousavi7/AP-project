@@ -12,25 +12,52 @@ public class PlayerMovement : MonoBehaviour
 	public static float fireRate = 0.1f; 
 	private float MAX_BORDER = 375f;
 	private float gunCoolDown = 0f;
-	// Start is called before the first frame update
-	void Start()
+	bool invulnerable = false;
+	bool threeShot = true;
+    // Start is called before the first frame update
+    void Start()
 	{
 		MAX_VELOCITY.Set(750, 0, 0);
 	}
 
-	void setFireRate(float fireRate)
+	public void setFireRate(float fireRate)
 	{
 		PlayerMovement.fireRate = fireRate;
 	}
+
+	public void setTwoShot(bool twoShot)
+	{
+		this.threeShot = twoShot;
+	}
+
+	public void setInvulnerable(bool able)
+	{
+		invulnerable = able;
+	}
+
 
     private void OnCollisionEnter(Collision collision)
     {
 		if (collision.gameObject.CompareTag("Enemy"))
 		{
-			Destroy(this.gameObject);
-			print("game ended");
+			if (!invulnerable)
+			{
+				Destroy(this.gameObject);
+				print("game ended");
+			}
 		}
+		if (collision.gameObject.name.Equals("shield1"))
+		{
 
+		}
+        if (collision.gameObject.name.Equals("shield2"))
+        {
+
+        }
+        if (collision.gameObject.name.Equals("shield"))
+        {
+
+        }
     }
 
     // Update is called once per frame
@@ -85,6 +112,13 @@ public class PlayerMovement : MonoBehaviour
 				Quaternion rot = Quaternion.identity;
 				pos.Set(PlayerTransform.position.x, -156f, -83f);
 				Instantiate(bullet, pos, rot);
+				if (threeShot)
+				{
+					pos.Set(PlayerTransform.position.x + 20f, -210f, -83f);
+					Instantiate(bullet, pos, rot);
+                    pos.Set(PlayerTransform.position.x - 20f, -210f, -83f);
+                    Instantiate(bullet, pos, rot);
+                }
 				gunCoolDown = -fireRate;
 			}
 		}
