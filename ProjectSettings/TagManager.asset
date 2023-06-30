@@ -8,6 +8,7 @@ TagManager:
   - Bullet
   - Roof
   - Ground
+  - Shield
   layers:
   - Default
   - TransparentFX

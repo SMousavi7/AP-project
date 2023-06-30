@@ -1,24 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
 	[SerializeField] Rigidbody PlayerRigidbody; 
 	[SerializeField] Transform PlayerTransform;
 	[SerializeField] Bullet bullet;
+	[SerializeField] Text clock;
 	private Vector3 MAX_VELOCITY = Vector3.zero;
-	public static float fireRate = 0.1f; 
+	public static float fireRate = 0.1f;
+	public static int difficultyLevel;
 	private float MAX_BORDER = 375f;
 	private float gunCoolDown = 0f;
-	bool invulnerable = true;
+	bool invulnerable = false;
 	bool threeShot = false;
 	float multcounter = 0;
     // Start is called before the first frame update
     void Start()
 	{
+		StreamReader sr = new StreamReader("Difficulty.txt");
+		string str = sr.ReadLine();
+		sr.Close();
+		difficultyLevel = int.Parse(str);
+		if( difficultyLevel == 3)
+		{
+			fireRate = 0.15f;
+		}
 		MAX_VELOCITY.Set(750, 0, 0);
 	}
 
@@ -53,6 +64,11 @@ public class PlayerMovement : MonoBehaviour
         {
 			setTwoShot(true);
 			multcounter = -5f;
+        }
+        if (collision.gameObject.name.StartsWith("shield"))
+        {
+            setInvulnerable(true);
+            multcounter = -5f;
         }
         if (collision.gameObject.name.StartsWith("invulnerbility"))
         {
@@ -153,14 +169,23 @@ public class PlayerMovement : MonoBehaviour
 		{
 			gunCoolDown += Time.deltaTime;
 		}
+		clock.text = " ";
 		if(multcounter < 0)
 		{
+			clock.text = "Power up remaining: " + ((int)-multcounter).ToString();
 			multcounter += Time.deltaTime;
 			if(multcounter >= 0) 
 			{
 				Score.setMult(1);
-				setFireRate(0.1f);
-				//setInvulnerable(false);
+				if(difficultyLevel == 3)
+				{
+					setFireRate(0.15f);
+				}
+				else
+				{
+					setFireRate(0.1f);
+				}
+				setInvulnerable(false);
 				BallMovement.timestop = false;
 				BallMovement.bombed = false;
 				setTwoShot(false);

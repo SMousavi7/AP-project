@@ -17,7 +17,7 @@ public class BallMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //read difficulty from file
+        difficulty = PlayerMovement.difficultyLevel;
         ballRigidbody.AddForce(Random.Range(-10000, 10000), 10000, 0);
         initialhp = hp * difficulty;
     }
@@ -25,7 +25,7 @@ public class BallMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Player"))
         {
             ballRigidbody.AddForce(0, 38000, 0);
         }
@@ -71,6 +71,7 @@ public class BallMovement : MonoBehaviour
     {
         if (bombed)
         {
+            Score.addScore(hp);
             Destroy(this.gameObject);
             Spawner.DecreaseBalls();
         }

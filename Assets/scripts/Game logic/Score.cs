@@ -35,6 +35,7 @@ public class Score : MonoBehaviour
     void Start()
     {
         //read difficulty from file
+        difficulty = PlayerMovement.difficultyLevel;
         scoreText.text = score.ToString() + " Points";
         highScoreText.text = getHighScore() + " Points";
     }
