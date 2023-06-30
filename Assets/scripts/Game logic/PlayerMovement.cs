@@ -15,9 +15,9 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] Bullet bullet;
 	[SerializeField] Text clock;
 	private Vector3 MAX_VELOCITY = Vector3.zero;
-	public static float fireRate = 0.1f;
+	public static float fireRate = 10f;
 	public static int difficultyLevel;
-	private float MAX_BORDER = 375f;
+	//private float MAX_BORDER = 375f;
 	private float gunCoolDown = 0f;
 	bool invulnerable = false;
 	bool threeShot = false;
@@ -25,15 +25,16 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
 	{
-		StreamReader sr = new StreamReader("Difficulty.txt");
+        fireRate = 5f * Time.deltaTime;
+        StreamReader sr = new StreamReader("Difficulty.txt");
 		string str = sr.ReadLine();
 		sr.Close();
 		difficultyLevel = int.Parse(str);
 		if( difficultyLevel == 3)
 		{
-			fireRate = 0.15f;
+			fireRate = 7f * Time.deltaTime;
 		}
-		MAX_VELOCITY.Set(750, 0, 0);
+		MAX_VELOCITY.Set(75000 * Time.deltaTime, 0, 0);
 	}
 
 	public void setFireRate(float fireRate)
@@ -122,13 +123,13 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.name.StartsWith("bomb"))
         {
 			BallMovement.bombed = true;
-			multcounter = -1f;
+			multcounter = -5f;
 			print("bomb");
         }
         if (collision.gameObject.name.StartsWith("timestop"))
         {
 			BallMovement.timestop = true;
-			multcounter = -6f;
+			multcounter = -5f;
 			print("timestop");
         }
         if (collision.gameObject.name.StartsWith("multiply"))
@@ -140,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.name.StartsWith("firerate"))
         {
 			print("firerate");
-			setFireRate(0.05f);
+			setFireRate(2f * Time.deltaTime);
             multcounter = -5f;
         }
     }
@@ -153,12 +154,12 @@ public class PlayerMovement : MonoBehaviour
 		{
 			if(PlayerRigidbody.velocity.x > -MAX_VELOCITY.x)
 			{ 
-				if(PlayerRigidbody.velocity.x > 300)
+				if(PlayerRigidbody.velocity.x > 30000 * Time.deltaTime)
 				{
                     PlayerRigidbody.AddForce(-100000 * (PlayerRigidbody.velocity.x / 150.0f) * Time.deltaTime, 0, 0);
                 }
                 else
-				{
+				{	
 					PlayerRigidbody.AddForce(-50000 * Time.deltaTime, 0, 0);
 				}
 			}
@@ -167,7 +168,7 @@ public class PlayerMovement : MonoBehaviour
 		{
 			if (PlayerRigidbody.velocity.x < MAX_VELOCITY.x)
 			{
-				if (PlayerRigidbody.velocity.x < -300)
+				if (PlayerRigidbody.velocity.x < -30000 * Time.deltaTime)
 				{
 					PlayerRigidbody.AddForce(100000 * (PlayerRigidbody.velocity.x / -150.0f) * Time.deltaTime, 0, 0);
 				}
@@ -179,7 +180,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 		else
 		{
-			PlayerRigidbody.velocity = PlayerRigidbody.velocity * 0.5f;
+			PlayerRigidbody.velocity = PlayerRigidbody.velocity * 1f * Time.deltaTime;
 		}
 		PlayerRigidbody.velocity.Normalize();
 		if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton((int)MouseButton.Left))
@@ -214,11 +215,11 @@ public class PlayerMovement : MonoBehaviour
 				Score.setMult(1);
 				if(difficultyLevel == 3)
 				{
-					setFireRate(0.15f);
+					setFireRate(7f * Time.deltaTime);
 				}
 				else
 				{
-					setFireRate(0.1f);
+					setFireRate(5f * Time.deltaTime);
 				}
 				setInvulnerable(false);
 				BallMovement.timestop = false;
