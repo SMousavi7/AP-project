@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+
 public class PlayerMovement : MonoBehaviour
 {
 	[SerializeField] Rigidbody PlayerRigidbody; 
@@ -31,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
 	{
+		
 		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
 		{
 			if(!(PlayerTransform.position.x > -MAX_BORDER))
