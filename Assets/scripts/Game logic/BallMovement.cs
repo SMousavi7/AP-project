@@ -9,6 +9,9 @@ public class BallMovement : MonoBehaviour
     [SerializeField] Rigidbody ballRigidbody;
     [SerializeField] int hp;
     [SerializeField] GameObject smallBall, mediumBall;
+    public static int gravity = -100;
+    public static bool timestop = false;
+    public static bool bombed = false;
     private int initialhp;
     // Start is called before the first frame update
     void Start()
@@ -64,6 +67,17 @@ public class BallMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ballRigidbody.AddForce(0, -100, 0);
+        if (bombed)
+        {
+            Destroy(this.gameObject);
+        }
+        else if (timestop)
+        {
+            ballRigidbody.velocity.Set(0, 0, 0);
+        }
+        else
+        {
+            ballRigidbody.AddForce(0, gravity, 0);
+        }
     }
 }

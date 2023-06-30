@@ -47,30 +47,43 @@ public class PlayerMovement : MonoBehaviour
 				print("game ended");
 			}
 		}
-		if (collision.gameObject.name.Equals("shield1"))
+		if (collision.gameObject.name.Equals("shield"))
 		{
-
+			print("shield");
 		}
-        if (collision.gameObject.name.Equals("shield2"))
+        if (collision.gameObject.name.Equals("threeshot"))
         {
-
+            print("threeshot");
         }
         if (collision.gameObject.name.Equals("invulnerbility"))
         {
-
+			print("invulnerbility");
+			setInvulnerable(true);
+			multcounter = -6f;
         }
         if (collision.gameObject.name.Equals("bomb"))
         {
-			
+			BallMovement.bombed = true;
+			multcounter = -1f;
+			print("bomb");
         }
         if (collision.gameObject.name.Equals("timestop"))
         {
-
+			BallMovement.timestop = true;
+			multcounter = -6f;
+			print("timestop");
         }
         if (collision.gameObject.name.Equals("multiply"))
         {
+			print("mult");
 			Score.setMult(2);
-			multcounter = -30f;
+			multcounter = -5f;
+        }
+        if (collision.gameObject.name.Equals("firerate"))
+        {
+			print("firerate");
+			setFireRate(0.05f);
+            multcounter = -5f;
         }
     }
 
@@ -146,6 +159,10 @@ public class PlayerMovement : MonoBehaviour
 			if(multcounter >= 0) 
 			{
 				Score.setMult(1);
+				setFireRate(0.1f);
+				setInvulnerable(false);
+				BallMovement.timestop = false;
+				BallMovement.bombed = false;
 			}
 		}
     }
