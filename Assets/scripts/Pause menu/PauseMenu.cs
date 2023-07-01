@@ -10,6 +10,7 @@ public class PauseMenu : MonoBehaviour
     public Animator animator;
     [SerializeField] GameObject on;
     [SerializeField] GameObject off;
+    [SerializeField] GameObject Setting;
 
     // Update is called once per frame
     void Update()
@@ -35,13 +36,31 @@ public class PauseMenu : MonoBehaviour
         GameIsPaused = false;
     }
 
-    void pause()
+    public void pause()
     {
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         GameIsPaused = true;
     }
+    public void loadMenu()
+    {
+        SceneManager.LoadScene("MainMenuScene");
+    }
 
+    public void retry()
+    {
+        SceneManager.LoadScene("Game");
+    }
+
+    public void setting()
+    {
+        Setting.SetActive(true);
+    }
+    public void quit()
+    {
+        print("game closed");
+        Application.Quit();
+    }
     public void LoadPreviousScene()
     {
         StartCoroutine(ls(SceneManager.GetActiveScene().buildIndex));

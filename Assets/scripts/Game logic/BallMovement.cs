@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BallMovement : MonoBehaviour
 {
@@ -9,7 +11,8 @@ public class BallMovement : MonoBehaviour
     [SerializeField] Rigidbody ballRigidbody;
     [SerializeField] int hp;
     [SerializeField] GameObject smallBall, mediumBall;
-    public static int gravity = -100;
+    [SerializeField] TextMeshPro hpText;
+    public static int gravity = -40000;
     public static int difficulty = 1;
     public static bool timestop = false;
     public static bool bombed = false;
@@ -20,6 +23,7 @@ public class BallMovement : MonoBehaviour
         difficulty = PlayerMovement.difficultyLevel;
         ballRigidbody.AddForce(Random.Range(-10000, 10000), 10000, 0);
         initialhp = hp * difficulty;
+        hpText.text = initialhp.ToString();
     }
 
 
@@ -27,7 +31,7 @@ public class BallMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Player"))
         {
-            ballRigidbody.AddForce(0, 38000, 0);
+            ballRigidbody.AddForce(0, 40000, 0);
         }
         if (collision.gameObject.CompareTag("Bullet"))
         {
@@ -69,6 +73,7 @@ public class BallMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        hpText.text = initialhp.ToString();
         if (bombed)
         {
             Score.addScore(hp);
@@ -82,7 +87,7 @@ public class BallMovement : MonoBehaviour
         else
         {
             ballRigidbody.isKinematic = false;
-            ballRigidbody.AddForce(0, gravity, 0);
+            ballRigidbody.AddForce(0, gravity * Time.deltaTime, 0);
         }
     }
 }

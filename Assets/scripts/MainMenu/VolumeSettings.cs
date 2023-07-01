@@ -26,8 +26,9 @@ public class VolumeSettings : MonoBehaviour
     public void setVolume()
     {
         float volume = slider.value;
-        myMixer.SetFloat("vol", volume);
-        PlayerPrefs.SetFloat("volume", volume);
+        //myMixer.SetFloat("vol", volume);
+        //PlayerPrefs.SetFloat("volume", volume);
+        AudioListener.volume = (volume + 60) / 68;
     }
 
     public void On()

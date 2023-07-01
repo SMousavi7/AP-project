@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Text clock;
     [SerializeField] GameObject output;
     [SerializeField] GameObject canvasForEndGame;
+    [SerializeField] playSound fireSound;
+    AudioSource audio = null;
     private Vector3 MAX_VELOCITY = Vector3.zero;
     public static float fireRate = 10f;
     public static int difficultyLevel;
@@ -28,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        audio = this.GetComponent<AudioSource>();
+        audio.Play();
         fireRate = 5f * Time.deltaTime;
         StreamReader sr = new StreamReader("Difficulty.txt");
         string str = sr.ReadLine();
@@ -38,6 +42,12 @@ public class PlayerMovement : MonoBehaviour
             fireRate = 7f * Time.deltaTime;
         }
         MAX_VELOCITY.Set(75000 * Time.deltaTime, 0, 0);
+    }
+
+    public void setVolume(int volume)
+    {
+        audio.volume = volume;
+        fireSound.GetComponent<AudioSource>().volume = volume;
     }
 
     public void setFireRate(float fireRate)
@@ -55,7 +65,42 @@ public class PlayerMovement : MonoBehaviour
         invulnerable = able;
     }
 
+    public String sendRecord()
+    {
+        IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234);
 
+        Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        clientSocket.Connect(serverAddress);
+
+        string toSend = "" + Score.getScore();
+        string select = "6";
+        byte[] temp = System.Text.Encoding.UTF8.GetBytes(select);
+        clientSocket.Send(temp);
+        int toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
+        byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
+        byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
+        clientSocket.Send(toSendLenBytes);
+        clientSocket.Send(toSendBytes);
+
+        StreamReader sr = new StreamReader("temp_username.txt");
+        string str = sr.ReadLine();
+        sr.Close();
+
+        int toSendLen1 = System.Text.Encoding.ASCII.GetByteCount(str);
+        byte[] toSendBytes1 = System.Text.Encoding.ASCII.GetBytes(str);
+        byte[] toSendLenBytes1 = System.BitConverter.GetBytes(toSendLen1);
+        clientSocket.Send(toSendLenBytes1);
+        clientSocket.Send(toSendBytes1);
+
+        byte[] rcvLenBytes = new byte[4];
+        clientSocket.Receive(rcvLenBytes);
+        int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
+        byte[] rcvBytes = new byte[rcvLen];
+        clientSocket.Receive(rcvBytes);
+        String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+        return rcv;
+        
+    }
     private void OnCollisionEnter(Collision collision)
     {
         print(collision.gameObject.name);
@@ -64,39 +109,10 @@ public class PlayerMovement : MonoBehaviour
             if (!invulnerable)
             {
                 Destroy(this.gameObject);
+                audio.Stop();
                 print("game ended");
 
-                IPEndPoint serverAddress = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234);
-
-                Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                clientSocket.Connect(serverAddress);
-
-                string toSend = "" + Score.getScore();
-                string select = "6";
-                byte[] temp = System.Text.Encoding.UTF8.GetBytes(select);
-                clientSocket.Send(temp);
-                int toSendLen = System.Text.Encoding.ASCII.GetByteCount(toSend);
-                byte[] toSendBytes = System.Text.Encoding.ASCII.GetBytes(toSend);
-                byte[] toSendLenBytes = System.BitConverter.GetBytes(toSendLen);
-                clientSocket.Send(toSendLenBytes);
-                clientSocket.Send(toSendBytes);
-
-                StreamReader sr = new StreamReader("temp_username.txt");
-                string str = sr.ReadLine();
-                sr.Close();
-
-                int toSendLen1 = System.Text.Encoding.ASCII.GetByteCount(str);
-                byte[] toSendBytes1 = System.Text.Encoding.ASCII.GetBytes(str);
-                byte[] toSendLenBytes1 = System.BitConverter.GetBytes(toSendLen1);
-                clientSocket.Send(toSendLenBytes1);
-                clientSocket.Send(toSendBytes1);
-
-                byte[] rcvLenBytes = new byte[4];
-                clientSocket.Receive(rcvLenBytes);
-                int rcvLen = System.BitConverter.ToInt32(rcvLenBytes, 0);
-                byte[] rcvBytes = new byte[rcvLen];
-                clientSocket.Receive(rcvBytes);
-                String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
+                String rcv = sendRecord();
                 if (rcv.Equals("new record"))
                 {
                     canvasForEndGame.SetActive(true);
@@ -203,6 +219,7 @@ public class PlayerMovement : MonoBehaviour
                     pos.Set(PlayerTransform.position.x - 20f, -210f, -83f);
                     Instantiate(bullet, pos, rot);
                 }
+                fireSound.GetComponentInParent<AudioSource>().Play();
                 gunCoolDown = -fireRate;
             }
         }
