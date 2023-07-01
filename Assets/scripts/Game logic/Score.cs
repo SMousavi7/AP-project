@@ -1,26 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Score : MonoBehaviour
 {
     [SerializeField] Text scoreText;
-    [SerializeField] Text highScoreText;
+    [SerializeField] GameObject player;
     private static int score = 0;
-    private static int highScore = 0;
     private static int mult = 1;
     private static int difficulty = 1;
-    public static int getHighScore()
-    {
-        //do this sadra
-        return 999;
-    }
     public static void setMult(int mult)
     {
-        Score.mult = mult * difficulty;
+        difficulty = PlayerMovement.difficultyLevel;
+        Score.mult = mult;
     }
     public static int getScore()
     {
@@ -30,20 +27,31 @@ public class Score : MonoBehaviour
     {
         Score.score += score * mult;
     }
- 
+
+    public void reset()
+    {
+
+        PlayerMovement p = player.GetComponent<PlayerMovement>();
+        p.sendRecord();
+        p.resetClock();
+        BallMovement.resetDMG();
+        score = 0;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        //read difficulty from file
-        difficulty = PlayerMovement.difficultyLevel;
+        //read difficulty from filepublic void readDifficulty()
+        StreamReader sr = new StreamReader("Difficulty.txt");
+        string str = sr.ReadLine();
+        sr.Close();
+        difficulty = int.Parse(str);
         scoreText.text = score.ToString() + " Points";
-        highScoreText.text = getHighScore() + " Points";
     }
 
     // Update is called once per frame
     void Update()
     {
         scoreText.text = score.ToString() + " Points";
-        highScoreText.text = highScore.ToString() + " Points";
     }
 }

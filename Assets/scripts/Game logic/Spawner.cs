@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
@@ -10,6 +11,7 @@ public class Spawner : MonoBehaviour
     public static float BALLSPAWNRATE = 5;
     float countdown = 0;
     public static int MAX_BALLS = 3;
+    private int difficultyLevel;
     private static int balls = 0;
     Vector3 spawnPosition = Vector3.zero;
     Quaternion spawnRotation = Quaternion.identity;
@@ -26,17 +28,22 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         balls = 0;
-        if(PlayerMovement.difficultyLevel == 2)
+        //read BALLSPAWNRATE and MAXBALLS from filepublic void readDifficulty()
+        StreamReader sr = new StreamReader("Difficulty.txt");
+        string str = sr.ReadLine();
+        sr.Close();
+        difficultyLevel = int.Parse(str);
+        
+        if (difficultyLevel == 2)
         {
             BALLSPAWNRATE = 4;
             MAX_BALLS = 4;
         }
-        if(PlayerMovement.difficultyLevel == 3)
+        if(difficultyLevel == 3)
         {
             BALLSPAWNRATE = 3;
             MAX_BALLS = 5;
         }
-        //read BALLSPAWNRATE and MAXBALLS from file
         spawnPosition.Set(0, 230, -80);
     }
 
