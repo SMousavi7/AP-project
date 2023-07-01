@@ -37,7 +37,7 @@ public class BallMovement : MonoBehaviour
                 if(initialhp <= 0)
                 {
                     Spawner.DecreaseBalls();
-                    Score.addScore(hp * difficulty);
+                    Score.addScore(hp);
                     Destroy(this.gameObject);
                 }
             }
