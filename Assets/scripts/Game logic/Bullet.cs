@@ -11,6 +11,7 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         bulletRigidbody.AddForce(0, 50000, 0);
+        
     }
 
     private void OnCollisionEnter(Collision collision)
