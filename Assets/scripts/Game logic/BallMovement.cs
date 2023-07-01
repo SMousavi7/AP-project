@@ -45,7 +45,7 @@ public class BallMovement : MonoBehaviour
                     Destroy(this.gameObject);
                 }
             }
-            else if (initialhp <= hp * difficulty / 2)
+            else if (initialhp <= 0)
             {
                 Vector3 pos = Vector3.zero;
                 pos.Set(ballTransform.position.x, ballTransform.position.y, ballTransform.position.z);
@@ -65,7 +65,7 @@ public class BallMovement : MonoBehaviour
                     Spawner.increaseBalls();
                 }
                 Destroy(this.gameObject);
-                Score.addScore(hp / 2);
+                Score.addScore(hp);
                 Spawner.DecreaseBalls();
             }
         }

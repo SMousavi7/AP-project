@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Rigidbody PlayerRigidbody;
     [SerializeField] Transform PlayerTransform;
     [SerializeField] Bullet bullet;
-    [SerializeField] Text clock;
+    [SerializeField] Text[] clock;
     [SerializeField] GameObject output;
     [SerializeField] GameObject canvasForEndGame;
     [SerializeField] playSound fireSound;
@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private float gunCoolDown = 0f;
     bool invulnerable = false;
     bool threeShot = false;
-    float multcounter = 0;
+    float[] multcounter = {0, 0, 0, 0, 0, 0};
     // Start is called before the first frame update
     void Start()
     {
@@ -128,42 +128,42 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.name.StartsWith("threeshot"))
         {
             setTwoShot(true);
-            multcounter = -5f;
+            multcounter[0] = -5f;
+            clock[0].text = "Three shot active";
         }
         if (collision.gameObject.name.StartsWith("shield"))
         {
             setInvulnerable(true);
-            multcounter = -5f;
-        }
-        if (collision.gameObject.name.StartsWith("invulnerbility"))
-        {
-            print("invulnerbility");
-            setInvulnerable(true);
-            multcounter = -5f;
+            multcounter[1] = -5f;
+            clock[1].text = "Invulnerbility active";
         }
         if (collision.gameObject.name.StartsWith("bomb"))
         {
             BallMovement.bombed = true;
-            multcounter = -5f;
+            multcounter[2] = -1f;
+            clock[2].text = "Bomb Droped";
             print("bomb");
         }
         if (collision.gameObject.name.StartsWith("timestop"))
         {
             BallMovement.timestop = true;
-            multcounter = -5f;
+            multcounter[3] = -5f;
+            clock[3].text = "Tick tock";
             print("timestop");
         }
         if (collision.gameObject.name.StartsWith("multiply"))
         {
             print("mult");
             Score.setMult(2);
-            multcounter = -5f;
+            clock[4].text = "Points are doubled";
+            multcounter[4] = -5f;
         }
         if (collision.gameObject.name.StartsWith("firerate"))
         {
             print("firerate");
+            clock[5].text = "Minigun active";
             setFireRate(2f * Time.deltaTime);
-            multcounter = -5f;
+            multcounter[5] = -5f;
         }
     }
 
@@ -227,26 +227,48 @@ public class PlayerMovement : MonoBehaviour
         {
             gunCoolDown += Time.deltaTime;
         }
-        clock.text = " ";
-        if (multcounter < 0)
+        for(int i = 0; i < 6; i++)
         {
-            clock.text = "Power up remaining: " + ((int)-multcounter).ToString();
-            multcounter += Time.deltaTime;
-            if (multcounter >= 0)
+            if (multcounter[i] < 0)
             {
-                Score.setMult(1);
-                if (difficultyLevel == 3)
+                multcounter[i] += Time.deltaTime;
+                if (multcounter[i] >= 0)
                 {
-                    setFireRate(7f * Time.deltaTime);
+                    clock[i].text = "";
+                    if(i == 4)
+                    {
+                        Score.setMult(1);
+                    }
+                    if(i == 5)
+                    {
+                        if (difficultyLevel == 3)
+                        {
+                            setFireRate(7f * Time.deltaTime);
+                        }
+                        else
+                        {
+                            setFireRate(5f * Time.deltaTime);
+                        }
+                    }
+                    if(i == 1)
+                    {
+                        setInvulnerable(false);
+                    }
+                    if(i == 3)
+                    {
+                        BallMovement.timestop = false;
+                    }
+                    if(i == 2)
+                    {
+                        BallMovement.bombed = false;
+                    }
+
+                    if(i == 0)
+                    {
+                        setTwoShot(false);
+                    }
+
                 }
-                else
-                {
-                    setFireRate(5f * Time.deltaTime);
-                }
-                setInvulnerable(false);
-                BallMovement.timestop = false;
-                BallMovement.bombed = false;
-                setTwoShot(false);
             }
         }
     }
