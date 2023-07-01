@@ -585,7 +585,6 @@ public class Server {
                     case "6":
                         server.checkScore();
                         break;
-                    case "7":
                 }
             }
     }

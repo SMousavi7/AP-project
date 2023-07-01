@@ -7,6 +7,7 @@ using UnityEngine;
 using System;
 using System.IO;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform PlayerTransform;
     [SerializeField] Bullet bullet;
     [SerializeField] Text clock;
+    [SerializeField] GameObject output;
+    [SerializeField] GameObject canvasForEndGame;
     private Vector3 MAX_VELOCITY = Vector3.zero;
     public static float fireRate = 10f;
     public static int difficultyLevel;
@@ -96,11 +99,13 @@ public class PlayerMovement : MonoBehaviour
                 String rcv = System.Text.Encoding.ASCII.GetString(rcvBytes);
                 if (rcv.Equals("new record"))
                 {
-                    print(rcv);
+                    canvasForEndGame.SetActive(true);
+                    output.GetComponent<TextMeshProUGUI>().text = "new record " + Score.getScore();
                 }
                 else
                 {
-                    print(Score.getScore());
+                    canvasForEndGame.SetActive(true);
+                    output.GetComponent<TextMeshProUGUI>().text = "your record " + Score.getScore();
                 }
             }
         }
