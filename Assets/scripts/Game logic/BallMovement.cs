@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class BallMovement : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class BallMovement : MonoBehaviour
     [SerializeField] int hp;
     [SerializeField] GameObject smallBall, mediumBall;
     [SerializeField] TextMeshPro hpText;
+    public static int DMG = 1; 
     public static int gravity = -40000;
     public static int difficulty = 1;
     public static bool timestop = false;
@@ -21,12 +23,35 @@ public class BallMovement : MonoBehaviour
     void Start()
     {
         difficulty = PlayerMovement.difficultyLevel;
-        ballRigidbody.AddForce(Random.Range(-10000, 10000), 10000, 0);
-        initialhp = hp * difficulty;
+        ballRigidbody.AddForce(Random.Range(-10, 10) * 1000, 10000, 0);
+        initialhp = hp * difficulty + (int)PlayerMovement.min * 2;
         hpText.text = initialhp.ToString();
     }
+    public static void increaseDMG()
+    {
+        DMG++;
+    }
 
+    public static void resetDMG()
+    {
+        DMG = 1;
+    }
+    private void OnEnable()
+    {
+        initialhp = hp * difficulty + (int)PlayerMovement.min * 2;
+    }
+    public void setHp(int hp)
+    {
+        this.hp = hp;
+    }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Player"))
+        {
+            ballRigidbody.AddForce(0, 1000, 0);
+        }
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Player"))
@@ -35,7 +60,9 @@ public class BallMovement : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            initialhp--;
+            initialhp-=DMG;
+            Vector3 newsize = new Vector3(ballTransform.localScale.x * 1.02f, ballTransform.localScale.y * 1.02f, ballTransform.localScale.z * 1.02f);
+            ballTransform.localScale = newsize;
             if(hp == 3)
             {
                 if(initialhp <= 0)
@@ -48,11 +75,12 @@ public class BallMovement : MonoBehaviour
             else if (initialhp <= 0)
             {
                 Vector3 pos = Vector3.zero;
-                pos.Set(ballTransform.position.x, ballTransform.position.y, ballTransform.position.z);
+                pos.Set(ballTransform.position.x + 20f, ballTransform.position.y, ballTransform.position.z);
                 Quaternion rot = Quaternion.identity;
                 if(hp == 6)
                 {
                     Instantiate(smallBall, pos, rot);
+                    pos.Set(ballTransform.position.x - 20f, ballTransform.position.y, ballTransform.position.z);
                     Instantiate(smallBall, pos, rot);
                     Spawner.increaseBalls();
                     Spawner.increaseBalls();
@@ -60,6 +88,7 @@ public class BallMovement : MonoBehaviour
                 else if (hp == 12)
                 {
                     Instantiate(mediumBall, pos, rot);
+                    pos.Set(ballTransform.position.x - 20f, ballTransform.position.y, ballTransform.position.z);
                     Instantiate(mediumBall, pos, rot);
                     Spawner.increaseBalls();
                     Spawner.increaseBalls();
@@ -74,7 +103,7 @@ public class BallMovement : MonoBehaviour
     void Update()
     {
         hpText.text = initialhp.ToString();
-        if (bombed)
+        if (bombed || ballTransform.position.y < -600)
         {
             Score.addScore(hp);
             Destroy(this.gameObject);
@@ -83,6 +112,10 @@ public class BallMovement : MonoBehaviour
         else if (timestop)
         {
             ballRigidbody.isKinematic = true;
+        }
+        else if(ballRigidbody.isKinematic == false)
+        {
+            ballRigidbody.AddForce(0, gravity * Time.deltaTime, 0);
         }
         else
         {

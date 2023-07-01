@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        bulletRigidbody.AddForce(0, 50000, 0);
+        bulletRigidbody.AddForce(0, 50, 0);
     }
 
     private void OnCollisionEnter(Collision collision)
