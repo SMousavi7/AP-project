@@ -77,6 +77,10 @@ public class ChangeUsername : MonoBehaviour
             {
                 output.GetComponent<TextMeshProUGUI>().text = "you changed your name successfully";
                 StartCoroutine(delay());
+                File.Delete("temp_username.txt");
+                StreamWriter sw = new StreamWriter("temp_username.txt");
+                sw.WriteLine(newUse); 
+                sw.Close();
             }
             else if(rcv.Equals("false"))
             {
