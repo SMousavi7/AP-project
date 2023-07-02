@@ -6,6 +6,8 @@ step up to the plate, let's see what you got!
 you can either play with your mouse or your keyboard using A and D and space. try to target the balls with your bullets.
 balls have a hitpoint written on them, big balls after getting to 0 hp, turn into two meduim balls and medium balls turn into two small balls after they get to 0 hp.
 sometimes some very powerfull powerups fall from sky, try to touch them before they get to ground and disapear for ever.
+# Programming Languages
+Game is using Unity as Game Engine and Scripts are written in C#.
 # server
 for keeping scores and updating them (and also login and signup) you need to run the java server located in asset/server
 # Music licenses
