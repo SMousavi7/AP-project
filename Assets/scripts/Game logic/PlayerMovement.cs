@@ -135,7 +135,6 @@ public class PlayerMovement : MonoBehaviour
         {
             if (!invulnerable)
             {
-
                 audio.Stop();
                 print("game ended");
                 Score.setMult(1);

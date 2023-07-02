@@ -61,7 +61,7 @@ public class ChangeUsername : MonoBehaviour
 
             int toSendLen1 = System.Text.Encoding.ASCII.GetByteCount(newUse);
             byte[] toSendBytes1 = System.Text.Encoding.ASCII.GetBytes(newUse);
-            byte[] toSendLenBytes1 = System.BitConverter.GetBytes(toSendLen);
+            byte[] toSendLenBytes1 = System.BitConverter.GetBytes(toSendLen1);
             clientSocket.Send(toSendLenBytes1);
             clientSocket.Send(toSendBytes1);
 

@@ -1,4 +1,2 @@
-Farzinium ******** 213
-Sadra ************ 0
-Mohadeseh ****** 243
-Farbod ******** 105
+Farzinium ****** 30
+Sadra ***** 6
