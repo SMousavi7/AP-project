@@ -28,6 +28,12 @@ public class Score : MonoBehaviour
         Score.score += score * mult;
     }
 
+    public void endgameReset()
+    {
+        BallMovement.resetDMG();
+        score = 0;
+    }
+
     public void reset()
     {
 

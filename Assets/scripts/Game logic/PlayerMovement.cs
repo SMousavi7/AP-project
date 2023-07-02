@@ -17,13 +17,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Text[] clock;
     [SerializeField] GameObject output;
     [SerializeField] GameObject canvasForEndGame;
+    [SerializeField] GameObject score;
     [SerializeField] playSound fireSound;
     [SerializeField] playSound powerupSound;
     [SerializeField] Text TimeClock;
     [SerializeField] Text DMGText;
     AudioSource audio = null;
     const float timeToFire = -100f, hardFR = 6f, normalFR = 10f, minigun = 40;
-    private bool debugmode = true;
+    private bool debugmode = false;
     private Vector3 MAX_VELOCITY = Vector3.zero;
     public static float fireRate = 1f;
     public static int difficultyLevel;
@@ -134,7 +135,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (!invulnerable)
             {
-                Destroy(this.gameObject);
+
                 audio.Stop();
                 print("game ended");
                 Score.setMult(1);
@@ -160,6 +161,9 @@ public class PlayerMovement : MonoBehaviour
                     canvasForEndGame.SetActive(true);
                     output.GetComponent<TextMeshProUGUI>().text = "your record " + Score.getScore();
                 }
+                score.GetComponent<Score>().endgameReset();
+                resetClock();
+                Destroy(this.gameObject);
             }
         }
         if (collision.gameObject.name.StartsWith("threeshot"))
